@@ -5,16 +5,20 @@
 
 IntersectData Collider::intersect(const Collider& other) const
 {
-    if(m_type == TYPE_SPHERE && other.getType() == TYPE_SPHERE)
-    {
-        BoundingSphere* self = (BoundingSphere*)this;
-        return self->intersectBoundingSphere((BoundingSphere&)other);
-    }
+  if(m_type == TYPE_SPHERE && other.getType() == TYPE_SPHERE)
+  {
+    BoundingSphere* self = (BoundingSphere*)this;
+    return self->intersectBoundingSphere((BoundingSphere&)other);
+  }
 
-    std::cerr << "Error: Collisions not implemented between specified colliders.\n";
-    exit(1);
+  std::cerr << "Error: Collisions not implemented between specified colliders.\n";
+  exit(1);
 
-    //Control should not reach this point
-    return IntersectData(false, ngl::Vec3::zero());
+  //Control should not reach this point
+  return IntersectData(false, ngl::Vec3::zero());
 }
 
+/*void Collider::transform(const ngl::Vec3& _translation)
+{
+    m_centre += _translation;
+}*/

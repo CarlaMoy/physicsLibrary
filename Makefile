@@ -59,7 +59,8 @@ SOURCES       = src/main.cpp \
 		src/NGLScene.cpp \
 		src/NGLSceneMouseControls.cpp \
 		src/rigidBodyFactory.cpp \
-		src/sphere.cpp 
+		src/sphere.cpp \
+		src/StaticPlane.cpp 
 OBJECTS       = obj/main.o \
 		obj/rigidBody.o \
 		obj/boundingSphere.o \
@@ -71,7 +72,8 @@ OBJECTS       = obj/main.o \
 		obj/NGLScene.o \
 		obj/NGLSceneMouseControls.o \
 		obj/rigidBodyFactory.o \
-		obj/sphere.o
+		obj/sphere.o \
+		obj/StaticPlane.o
 DIST          = .qmake.stash \
 		PhysicsLibrary.pro include/NGLScene.h \
 		include/WindowParams.h \
@@ -84,7 +86,8 @@ DIST          = .qmake.stash \
 		include/collider.h \
 		include/rigidBodyFactory.h \
 		include/rigidBodyTypeInfo.h \
-		include/sphere.h src/main.cpp \
+		include/sphere.h \
+		include/StaticPlane.h src/main.cpp \
 		src/rigidBody.cpp \
 		src/boundingSphere.cpp \
 		src/intersectdata.cpp \
@@ -95,7 +98,8 @@ DIST          = .qmake.stash \
 		src/NGLScene.cpp \
 		src/NGLSceneMouseControls.cpp \
 		src/rigidBodyFactory.cpp \
-		src/sphere.cpp
+		src/sphere.cpp \
+		src/StaticPlane.cpp
 QMAKE_TARGET  = PhysicsLibrary
 DESTDIR       = 
 TARGET        = PhysicsLibrary
@@ -442,8 +446,8 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents include/NGLScene.h include/WindowParams.h include/rigidBody.h include/boundingSphere.h include/intersectdata.h include/aabb.h include/plane.h include/physicsengine.h include/collider.h include/rigidBodyFactory.h include/rigidBodyTypeInfo.h include/sphere.h $(DISTDIR)/
-	$(COPY_FILE) --parents src/main.cpp src/rigidBody.cpp src/boundingSphere.cpp src/intersectdata.cpp src/aabb.cpp src/plane.cpp src/physicsengine.cpp src/collider.cpp src/NGLScene.cpp src/NGLSceneMouseControls.cpp src/rigidBodyFactory.cpp src/sphere.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents include/NGLScene.h include/WindowParams.h include/rigidBody.h include/boundingSphere.h include/intersectdata.h include/aabb.h include/plane.h include/physicsengine.h include/collider.h include/rigidBodyFactory.h include/rigidBodyTypeInfo.h include/sphere.h include/StaticPlane.h $(DISTDIR)/
+	$(COPY_FILE) --parents src/main.cpp src/rigidBody.cpp src/boundingSphere.cpp src/intersectdata.cpp src/aabb.cpp src/plane.cpp src/physicsengine.cpp src/collider.cpp src/NGLScene.cpp src/NGLSceneMouseControls.cpp src/rigidBodyFactory.cpp src/sphere.cpp src/StaticPlane.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -640,12 +644,20 @@ obj/main.o: src/main.cpp /opt/Qt5.7.0/5.7/gcc_64/include/QtGui/QGuiApplication \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/QScopedPointer \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglversionfunctions.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/QImage \
-		include/boundingSphere.h \
+		include/physicsengine.h \
+		include/rigidBody.h \
+		/home/i7466612/NGL/include/ngl/ShaderLib.h \
+		/home/i7466612/NGL/include/ngl/Shader.h \
+		/home/i7466612/NGL/include/ngl/ShaderProgram.h \
+		/home/i7466612/NGL/include/ngl/Util.h \
+		/home/i7466612/NGL/include/ngl/Singleton.h \
+		/home/i7466612/NGL/include/ngl/Mat3.h \
+		include/collider.h \
 		include/intersectdata.h \
 		/home/i7466612/NGL/include/ngl/NGLInit.h \
-		/home/i7466612/NGL/include/ngl/Singleton.h \
 		/home/i7466612/NGL/include/ngl/VAOPrimitives.h \
-		include/collider.h \
+		include/rigidBodyTypeInfo.h \
+		include/boundingSphere.h \
 		include/aabb.h \
 		include/plane.h \
 		include/physicsobject.h \
@@ -777,10 +789,17 @@ obj/rigidBody.o: src/rigidBody.cpp include/rigidBody.h \
 		/home/i7466612/NGL/include/ngl/BBox.h \
 		/home/i7466612/NGL/include/ngl/AbstractVAO.h \
 		/home/i7466612/NGL/include/ngl/Colour.h \
+		/home/i7466612/NGL/include/ngl/Transformation.h \
+		/home/i7466612/NGL/include/ngl/NGLassert.h \
+		/home/i7466612/NGL/include/ngl/ShaderLib.h \
+		/home/i7466612/NGL/include/ngl/Shader.h \
+		/home/i7466612/NGL/include/ngl/ShaderProgram.h \
+		/home/i7466612/NGL/include/ngl/Util.h \
+		/home/i7466612/NGL/include/ngl/Singleton.h \
+		/home/i7466612/NGL/include/ngl/Mat3.h \
 		include/collider.h \
 		include/intersectdata.h \
 		/home/i7466612/NGL/include/ngl/NGLInit.h \
-		/home/i7466612/NGL/include/ngl/Singleton.h \
 		/home/i7466612/NGL/include/ngl/VAOPrimitives.h \
 		include/rigidBodyTypeInfo.h \
 		include/boundingSphere.h
@@ -1029,7 +1048,8 @@ obj/aabb.o: src/aabb.cpp include/aabb.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qsurfaceformat.h \
 		/home/i7466612/NGL/include/ngl/VAOPrimitives.h \
 		/home/i7466612/NGL/include/ngl/Vec3.h \
-		/home/i7466612/NGL/include/ngl/AbstractVAO.h
+		/home/i7466612/NGL/include/ngl/AbstractVAO.h \
+		include/collider.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/aabb.o src/aabb.cpp
 
 obj/plane.o: src/plane.cpp include/plane.h \
@@ -1280,17 +1300,23 @@ obj/physicsengine.o: src/physicsengine.cpp include/physicsengine.h \
 		/home/i7466612/NGL/include/ngl/BBox.h \
 		/home/i7466612/NGL/include/ngl/AbstractVAO.h \
 		/home/i7466612/NGL/include/ngl/Colour.h \
+		/home/i7466612/NGL/include/ngl/Transformation.h \
+		/home/i7466612/NGL/include/ngl/NGLassert.h \
+		/home/i7466612/NGL/include/ngl/ShaderLib.h \
+		/home/i7466612/NGL/include/ngl/Shader.h \
+		/home/i7466612/NGL/include/ngl/ShaderProgram.h \
+		/home/i7466612/NGL/include/ngl/Util.h \
+		/home/i7466612/NGL/include/ngl/Singleton.h \
+		/home/i7466612/NGL/include/ngl/Mat3.h \
 		include/collider.h \
 		include/intersectdata.h \
 		/home/i7466612/NGL/include/ngl/NGLInit.h \
-		/home/i7466612/NGL/include/ngl/Singleton.h \
 		/home/i7466612/NGL/include/ngl/VAOPrimitives.h \
 		include/rigidBodyTypeInfo.h \
 		/home/i7466612/NGL/include/ngl/SimpleVAO.h \
 		include/boundingSphere.h \
 		/home/i7466612/NGL/include/ngl/Random.h \
-		/home/i7466612/NGL/include/ngl/VAOFactory.h \
-		/home/i7466612/NGL/include/ngl/Util.h
+		/home/i7466612/NGL/include/ngl/VAOFactory.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/physicsengine.o src/physicsengine.cpp
 
 obj/collider.o: src/collider.cpp include/collider.h \
@@ -1571,20 +1597,20 @@ obj/NGLScene.o: src/NGLScene.cpp /opt/Qt5.7.0/5.7/gcc_64/include/QtGui/QMouseEve
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/QScopedPointer \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglversionfunctions.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/QImage \
-		/home/i7466612/NGL/include/ngl/Material.h \
-		/home/i7466612/NGL/include/ngl/NGLInit.h \
-		/home/i7466612/NGL/include/ngl/Singleton.h \
-		/home/i7466612/NGL/include/ngl/VAOPrimitives.h \
+		include/physicsengine.h \
+		include/rigidBody.h \
 		/home/i7466612/NGL/include/ngl/ShaderLib.h \
 		/home/i7466612/NGL/include/ngl/Shader.h \
 		/home/i7466612/NGL/include/ngl/ShaderProgram.h \
 		/home/i7466612/NGL/include/ngl/Util.h \
+		/home/i7466612/NGL/include/ngl/Singleton.h \
 		/home/i7466612/NGL/include/ngl/Mat3.h \
-		include/physicsengine.h \
-		include/rigidBody.h \
 		include/collider.h \
 		include/intersectdata.h \
+		/home/i7466612/NGL/include/ngl/NGLInit.h \
+		/home/i7466612/NGL/include/ngl/VAOPrimitives.h \
 		include/rigidBodyTypeInfo.h \
+		/home/i7466612/NGL/include/ngl/Material.h \
 		include/boundingSphere.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/NGLScene.o src/NGLScene.cpp
 
@@ -1596,6 +1622,9 @@ obj/rigidBodyFactory.o: src/rigidBodyFactory.cpp
 
 obj/sphere.o: src/sphere.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/sphere.o src/sphere.cpp
+
+obj/StaticPlane.o: src/StaticPlane.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/StaticPlane.o src/StaticPlane.cpp
 
 ####### Install
 

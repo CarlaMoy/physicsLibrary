@@ -39,7 +39,8 @@ SOURCES+=$$PWD/src/main.cpp \
          $$PWD/src/NGLScene.cpp \
          $$PWD/src/NGLSceneMouseControls.cpp \
          $$PWD/src/rigidBodyFactory.cpp \
-         $$PWD/src/sphere.cpp
+         $$PWD/src/sphere.cpp \
+         $$PWD/src/StaticPlane.cpp
 
 
 # same for the .h files
@@ -54,7 +55,8 @@ HEADERS+= $$PWD/include/NGLScene.h \
           $$PWD/include/collider.h \
           $$PWD/include/rigidBodyFactory.h \
           $$PWD/include/rigidBodyTypeInfo.h \
-          $$PWD/include/sphere.h
+          $$PWD/include/sphere.h \
+          $$PWD/include/StaticPlane.h
 
 
 # and add the include dir into the search path for Qt and make

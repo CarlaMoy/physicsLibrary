@@ -17,13 +17,13 @@ basic OpenGL demo modified from http://qt-project.org/doc/qt-5.0/qtgui/openglwin
 #include "OpenGLWindow.h"
 
 #if defined(__linux__) || defined(WIN32)
-    #include <GL/gl.h>
-    #include<GL/glu.h>
+#include <GL/gl.h>
+#include<GL/glu.h>
 #endif
 
 #ifdef __APPLE__
-    #include <OpenGL/gl.h>
-    #include <OpenGL/glu.h>
+#include <OpenGL/gl.h>
+#include <OpenGL/glu.h>
 #endif
 
 
@@ -45,40 +45,40 @@ basic OpenGL demo modified from http://qt-project.org/doc/qt-5.0/qtgui/openglwin
 
 int main(int argc, char **argv)
 {
-    QGuiApplication app(argc, argv);
-    // create an OpenGL format specifier
-    QSurfaceFormat format;
-    // set the number of samples for multisampling
-    // will need to enable glEnable(GL_MULTISAMPLE); once we have a context
-    format.setSamples(4);
-    #if defined( __APPLE__)
-      // at present mac osx Mountain Lion only supports GL3.2
-      // the new mavericks will have GL 4.x so can change
-      format.setMajorVersion(4);
-      format.setMinorVersion(1);
-    #else
-      // with luck we have the latest GL version so set to this
-      format.setMajorVersion(4);
-      format.setMinorVersion(3);
-    #endif
-    // now we are going to set to CoreProfile OpenGL so we can't use and old Immediate mode GL
-    format.setProfile(QSurfaceFormat::CoreProfile);
-    // now set the depth buffer to 24 bits
-    format.setDepthBufferSize(24);
-    // now we are going to create our scene window
-    NGLScene window;
-    // and set the OpenGL format
-    window.setFormat(format);
-    // we can now query the version to see if it worked
-    std::cout<<"Profile is "<<format.majorVersion()<<" "<<format.minorVersion()<<"\n";
-    // set the window size
-    window.resize(1024, 720);
-    // and finally show
-    window.show();
+  QGuiApplication app(argc, argv);
+  // create an OpenGL format specifier
+  QSurfaceFormat format;
+  // set the number of samples for multisampling
+  // will need to enable glEnable(GL_MULTISAMPLE); once we have a context
+  format.setSamples(4);
+#if defined( __APPLE__)
+  // at present mac osx Mountain Lion only supports GL3.2
+  // the new mavericks will have GL 4.x so can change
+  format.setMajorVersion(4);
+  format.setMinorVersion(1);
+#else
+  // with luck we have the latest GL version so set to this
+  format.setMajorVersion(4);
+  format.setMinorVersion(3);
+#endif
+  // now we are going to set to CoreProfile OpenGL so we can't use and old Immediate mode GL
+  format.setProfile(QSurfaceFormat::CoreProfile);
+  // now set the depth buffer to 24 bits
+  format.setDepthBufferSize(24);
+  // now we are going to create our scene window
+  NGLScene window;
+  // and set the OpenGL format
+  window.setFormat(format);
+  // we can now query the version to see if it worked
+  std::cout<<"Profile is "<<format.majorVersion()<<" "<<format.minorVersion()<<"\n";
+  // set the window size
+  window.resize(1024, 720);
+  // and finally show
+  window.show();
 
 
 
-    Plane p1(ngl::Vec3(0.0,1.0,0.0), 0.0);
+  /*    Plane p1(ngl::Vec3(0.0,1.0,0.0), 0.0);
 
     BoundingSphere s1(ngl::Vec3(0.0,0.0,0.0), 1.0f);
     BoundingSphere s2(ngl::Vec3(0.0,1.0,0.0), 1.0f);
@@ -116,20 +116,20 @@ int main(int argc, char **argv)
     std::cout << "plane intersects sphere: " << p1s1.GetDoesIntersect() << " distance: " << p1s1.getDistance() << std::endl;
     std::cout << "plane intersects sphere: " << p1s2.GetDoesIntersect() << " distance: " << p1s2.getDistance() << std::endl;
     std::cout << "plane intersects sphere: " << p1s3.GetDoesIntersect() << " distance: " << p1s3.getDistance() << std::endl;
-    std::cout << "plane intersects sphere: " << p1s4.GetDoesIntersect() << " distance: " << p1s4.getDistance() << std::endl;
+    std::cout << "plane intersects sphere: " << p1s4.GetDoesIntersect() << " distance: " << p1s4.getDistance() << std::endl;*/
 
 
-    return app.exec();
+  return app.exec();
 
 
   //  PhysicsObject test(TYPE_SPHERE, 1.0);
 
-//    test.integrate(20.0);
+  //    test.integrate(20.0);
 
- //   glm::vec3 testPos = test.getPosition();
- //   glm::vec3 testVel = test.getVelocity();
+  //   glm::vec3 testPos = test.getPosition();
+  //   glm::vec3 testVel = test.getVelocity();
 
- //   std::cout << testPos.x << " " << testPos.y << " " <<testPos.z << " Velocity " <<testVel.x << std::endl;
+  //   std::cout << testPos.x << " " << testPos.y << " " <<testPos.z << " Velocity " <<testVel.x << std::endl;
 
 }
 

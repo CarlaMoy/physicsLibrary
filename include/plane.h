@@ -4,12 +4,12 @@
 #include <glm/glm.hpp>
 #include "boundingSphere.h"
 
-class Plane
+class StaticPlane
 {
 public:
-    Plane(const ngl::Vec3& normal, float distance) : m_normal(normal), m_distance(distance){}
+    StaticPlane(const ngl::Vec3& normal, float distance) : m_normal(normal), m_distance(distance){}
 
-    Plane normalised() const;
+    StaticPlane normalised() const;
 
     IntersectData intersectSphere(const BoundingSphere& other) const;
 
