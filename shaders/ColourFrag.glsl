@@ -27,8 +27,8 @@ struct Lights
 // @param material passed from our program
 //uniform Materials material;
 uniform vec3 Colour;
-//Materials material = Materials(vec4(1.0,1.0,1.0,1.0), vec4(Colour.r, Colour.g, Colour.b, 1.0), vec4(0.2,0.2,0.2,1.0), 40.0);
-Materials material = Materials(vec4(1.0,1.0,1.0,1.0), vec4(0.2,0.2,0.6,1.0), vec4(0.2,0.2,0.2,1.0), 40.0);
+Materials material = Materials(vec4(1.0,1.0,1.0,1.0), vec4(Colour.r, Colour.g, Colour.b, 1.0), vec4(0.2,0.2,0.2,1.0), 40.0);
+//Materials material = Materials(vec4(1.0,1.0,1.0,1.0), vec4(0.2,0.2,0.6,1.0), vec4(0.2,0.2,0.2,1.0), 40.0);
 
 
 uniform Lights light;

@@ -45,6 +45,8 @@ private:
     std::vector<RigidBody> m_rigidObjects;
     //std::unique_ptr<ngl::AbstractVAO> m_vao;
     bool m_gravOn;
+    float m_groundPlane_y = 0.01;
+    //ngl::Vec3 m_groundPlane_y = ngl::Vec3(0.0,0.0,0.0);
 
 
     void resetRigidBody(RigidBody &io_r);

@@ -11,8 +11,9 @@
 #include <ngl/ShaderLib.h>
 #include "physicsengine.h"
 #include "boundingSphere.h"
+#include "aabb.h"
 
-PhysicsEngine *world = NULL;
+//PhysicsEngine *world = NULL;
 
 NGLScene::NGLScene()
 {
@@ -78,7 +79,7 @@ void NGLScene::initializeGL()
   // and make it active ready to load values
   //  (*shader)["Phong"]->use();
   shader->setShaderParam1i("Normalize",1);
-  shader->setShaderParam3f("Colour", 0.4,0.4,0.9);
+//  shader->setShaderParam3f("Colour", 0.4,0.3,0.9);
   // the shader will use the currently active material and light0 so set them
   // ngl::Material m( ngl::STDMAT::BRONZE );
   // load our material values to the shader into the structure material (see Vertex shader)
@@ -98,7 +99,7 @@ void NGLScene::initializeGL()
   shader->setShaderParam3f("viewerPos",m_cam.getEye().m_x,m_cam.getEye().m_y,m_cam.getEye().m_z);
 
   m_lightAngle=0.0;
-  m_light.reset( new ngl::Light(ngl::Vec3(0,2,2),ngl::Colour(1,1,1,1),ngl::Colour(1,1,1,1),ngl::LightModes::POINTLIGHT));
+  m_light.reset( new ngl::Light(ngl::Vec3(0,2,2),ngl::Colour(1,1,1,1),ngl::Colour(1,1,1,1),ngl::LightModes::DIRECTIONALLIGHT));
 
   // now create our light this is done after the camera so we can pass the
   // transpose of the projection matrix to the light to do correct eye space
@@ -111,7 +112,7 @@ void NGLScene::initializeGL()
 
 
   ngl::VAOPrimitives *prim=ngl::VAOPrimitives::instance();
-  prim->createSphere("sphere",0.5f,50);
+  prim->createSphere("sphere",1.0f,50);
 
   //  prim->createCylinder("cylinder",0.5f,1.4f,40,40);
 
@@ -130,11 +131,17 @@ void NGLScene::initializeGL()
   PhysicsEngine *world = PhysicsEngine::instance();
 
                                                 //position            radius            velocity            colour            mass
-  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(5.0,10.0,1.0), 1.0), ngl::Vec3(-2.0,0.0,0.0), ngl::Vec3(0.1,0.1,0.7), 1.0));
-  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(-5.0,10.0,1.0), 1.0), ngl::Vec3(4.0,0.0,0.0), ngl::Vec3(0.1,0.1,0.7), 2.0));
-  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(0.0,10.0,3.0), 1.0), ngl::Vec3(0.0,0.0,-2.0), ngl::Vec3(0.1,0.1,0.7), 2.0));
-  ///@brief problem with AABB, also need to implement collision detection
- // world->addObject(RigidBody(new AABB()));
+  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(5.0,10.0,1.0), 1.0), ngl::Vec3(-1.0,0.0,0.0), ngl::Vec3(1.0,0.1,0.7), 1.0));
+  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(-8.0,8.0,1.0), 6.0), ngl::Vec3(0.0,0.0,0.0), ngl::Vec3(0.1,0.1,0.7), 2.0));
+//  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(0.0,5.0,3.0), 0.5), ngl::Vec3(0.0,0.0,0.0), ngl::Vec3(0.1,0.1,0.7), 2.0));
+ // world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(6.0,3.0,4.0), 1.0), ngl::Vec3(2.0,0.0,0.0), ngl::Vec3(0.1,0.1,0.7), 1.0));
+//  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(-2.0,7.0,5.0), 1.0), ngl::Vec3(1.0,1.0,0.0), ngl::Vec3(0.1,0.1,0.7), 2.0));
+//  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(-2.0,7.0,10.0), 1.0), ngl::Vec3(1.0,0.0,0.0), ngl::Vec3(0.1,0.1,0.7), 2.0));
+  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(-2.0,7.0,-5.0), 2.0), ngl::Vec3(1.0,1.0,0.0), ngl::Vec3(0.1,0.1,0.7), 2.0));
+//  world->addObject(RigidBody(new AABB(ngl::Vec3(5.0,10.0,2.0),1.0,3.0,1.0), ngl::Vec3(0.0,0.0,0.0), ngl::Vec3(0.1,0.5,1.0), 0.5));
+//  world->addObject(RigidBody(new AABB(ngl::Vec3(0.0,10.0,0.0),1.0,1.0,1.0), ngl::Vec3(1.0,0.0,0.0), ngl::Vec3(0.1,0.5,1.0), 0.5));
+//  ///@brief problem with AABB, also need to implement collision detection
+// // world->addObject(RigidBody(new AABB()));
 
 
 
@@ -162,6 +169,7 @@ void NGLScene::loadMatricesToShader()
   shader->setShaderParamFromMat4("MVP",MVP);
   shader->setShaderParamFromMat3("normalMatrix",normalMatrix);
   shader->setShaderParamFromMat4("M",M);
+  shader->setShaderParam3f("Colour",0.9, 0.7, 0.8);
 }
 
 void NGLScene::drawScene(const std::string &_shader)
@@ -307,6 +315,7 @@ void NGLScene::wheelEvent( QWheelEvent* _event )
 
 void NGLScene::keyPressEvent(QKeyEvent *_event)
 {
+  PhysicsEngine *world = PhysicsEngine::instance();
   // this method is called every time the main window recives a key event.
   // we then switch on the key value and set the camera in the GLWindow
   switch (_event->key())
@@ -322,6 +331,7 @@ void NGLScene::keyPressEvent(QKeyEvent *_event)
     // show windowed
   case Qt::Key_N : showNormal(); break;
   case Qt::Key_Space : m_animate^=true; break;
+  case Qt::Key_A : world->addObject(RigidBody(new AABB(ngl::Vec3(0.0,10.0,0.0),1.0,1.0,1.0), ngl::Vec3(1.0,0.0,0.0), ngl::Vec3(0.1,0.5,1.0), 0.5)); break;
   default : break;
   }
   // finally update the GLWindow and re-draw
@@ -351,7 +361,7 @@ void NGLScene::timerEvent(QTimerEvent *_event )
     updateLight();
 
     world->updatePhysics(0.005);
-    world->handleCollisions();
+   // world->handleCollisions();
   }
   // re-draw GL
   update();

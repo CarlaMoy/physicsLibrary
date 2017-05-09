@@ -1,18 +1,19 @@
 #include "aabb.h"
 
 
-AABB::AABB(const float& _width, const float& _height, const float& _depth): Collider(Collider::TYPE_AABB),
+AABB::AABB(ngl::Vec3 _position, const float& _width, const float& _height, const float& _depth): Collider(Collider::TYPE_AABB),
   m_width(_width),
   m_height(_height),
   m_depth(_depth),
   m_minPoint(minBound()),
-  m_maxPoint(maxBound())
+  m_maxPoint(maxBound()),
+  m_centre(_position)
 {
-  m_centre = (m_maxPoint - m_minPoint)/2.0;
+ // m_centre = (m_maxPoint - m_minPoint)/2.0;
 }
 
 
-IntersectData AABB::IntersectAABB(const AABB& other) const
+IntersectData AABB::intersectAABB(const AABB& other) const
 {
   ngl::Vec3 dist1 = other.getMinPoint() - m_maxPoint;
   ngl::Vec3 dist2 = m_minPoint - other.getMaxPoint();

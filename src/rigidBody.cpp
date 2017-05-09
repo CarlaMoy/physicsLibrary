@@ -30,8 +30,8 @@ void RigidBody::integrate(float delta)
 {
   m_position += m_velocity * delta;
   m_velocity += m_gravity * delta;
-  std::cout<<m_velocity<<" velocity\n";
-  std::cout<<m_gravity<<" gravity\n";
+//  std::cout<<m_velocity<<" velocity\n";
+ // std::cout<<m_position<<" position\n";
 }
 
 
@@ -52,8 +52,10 @@ void RigidBody::drawRigidBody(const ngl::Mat4 &_globalTx, ngl::Camera *_cam, con
   shader->use(_shaderName);
   transform.reset();
   {
-    transform.setPosition(m_position);
-    transform.setScale(m_collider->getSize()*2); // *2 to get diameter instead of radius
+   // auto size=m_collider->getSize();
+   // size/=2.0;
+    transform.setPosition( m_position.m_x,m_position.m_y,m_position.m_z);
+    transform.setScale(m_collider->getSize());
 
     ngl::Mat4 MV;
     ngl::Mat4 MVP;
@@ -66,12 +68,19 @@ void RigidBody::drawRigidBody(const ngl::Mat4 &_globalTx, ngl::Camera *_cam, con
     normalMatrix.inverse();
     shader->setShaderParamFromMat4("MVP",MVP);
     shader->setShaderParamFromMat3("normalMatrix",normalMatrix);
-    shader->setShaderParam3f("Colour",m_colour.m_r, m_colour.m_g, m_colour.m_b);
+    std::cout<<m_colour<<"Colour\n";
+    shader->setShaderParam3f("Colour", m_colour.m_r, m_colour.m_g, m_colour.m_b);
 
-    if(m_collider->getType() == m_collider->TYPE_SPHERE)
-      prim->draw("sphere");
-    else if(m_collider->getType() == m_collider->TYPE_AABB)
-      prim->draw("cube");
+    switch(m_collider->getType())
+    {
+    case m_collider->TYPE_SPHERE : prim->draw("sphere"); break;
+    case m_collider->TYPE_AABB : prim->draw("cube"); break;
+    }
+
+//    if(m_collider->getType() == m_collider->TYPE_SPHERE)
+//      prim->draw("sphere");
+//    else if(m_collider->getType() == m_collider->TYPE_AABB)
+//      prim->draw("cube");
   }
 }
 

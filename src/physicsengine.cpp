@@ -6,6 +6,7 @@
 #include <ngl/VAOFactory.h>
 #include <ngl/SimpleVAO.h>
 #include <ngl/Util.h>
+#include <ngl/NGLStream.h>
 
 PhysicsEngine* PhysicsEngine::s_instance = 0;
 
@@ -38,15 +39,20 @@ void PhysicsEngine::simulate(float delta)
 void PhysicsEngine::handleCollisions()
 {
 
+
   for(unsigned int i = 0; i < m_rigidObjects.size(); i++)
   {
-    for(unsigned int j = i + 1; j < m_rigidObjects.size(); j++)
+    for(unsigned int j = i+1; j < m_rigidObjects.size(); j++) //change this implementation to j = 0, then if(i==j) continue
     {
+      //if(i==j) continue;
       ///@brief Gets whether objects intersect and the direction of intersection between BoundingSphere-BoundingSphere,
       /// BoundingSphere-AABB, AABB-AABB.
       IntersectData intersectData = m_rigidObjects[i].getCollider().intersect(m_rigidObjects[j].getCollider());
+    //  IntersectData groundSphereData = m_rigidObjects[i].getCollider().intersect();
+   //   std::cout<<intersectData.GetDoesIntersect()<< "Intersect?\n";
+   //   std::cout<<m_rigidObjects[i].getCollider().getSize()<<"Size\n";
 
-
+      ///@brief Collision response based on intersection of two dynamic rigid bodies
       if(intersectData.GetDoesIntersect())
       {
         ngl::Vec3 direction = intersectData.getDirection();
@@ -55,9 +61,20 @@ void PhysicsEngine::handleCollisions()
         m_rigidObjects[j].setVelocity(ngl::Vec3(m_rigidObjects[j].getVelocity().reflect(direction)));
       }
     }
+    ///@brief Collision response based on objects intersecting the ground plane.
+    if((m_rigidObjects[i].getPosition().m_y - m_rigidObjects[i].getCollider().getSize().m_y) < m_groundPlane_y)
+    {
+  //      m_rigidObjects[i].setVelocity(ngl::Vec3(0.0,0.0,0.0));
+      ngl::Vec3 normal = ngl::Vec3(0.0,1.0,0.0);
+      //float velocityDampFa
+      float dist = normal.dot(m_rigidObjects[i].getPosition());
+  //    float dist = m_rigidObjects[i].getPosition().m_y;
+   //   m_rigidObjects[i].setPosition(m_rigidObjects[i].getPosition() - normal * abs(dist));// + m_rigidObjects[i].getCollider().getSize());
+      //m_rigidObjects[i].setPosition(m_rigidObjects[i].getPosition() + ngl::Vec3(0.0,m_rigidObjects[i].getCollider().getSize().m_y,0.0));
+      m_rigidObjects[i].setVelocity(ngl::Vec3(m_rigidObjects[i].getVelocity().reflect(normal)));//*0.991));
+    }
   }
 }
-
 
 
 

@@ -32,6 +32,7 @@ private:
 #include <glm/glm.hpp>
 #include "intersectdata.h"
 #include "collider.h"
+#include "aabb.h"
 #include <ngl/NGLInit.h>
 
 class BoundingSphere : public Collider
@@ -40,11 +41,13 @@ public:
     BoundingSphere(const ngl::Vec3& centre, float radius) : Collider(Collider::TYPE_SPHERE), m_centre(centre), m_radius(radius){}
 
     IntersectData intersectBoundingSphere(const BoundingSphere& other) const;
+    IntersectData intersectAABB(const AABB& other) const;
 
 
+    IntersectData intersectGroundPlane();
     virtual void transform(const ngl::Vec3& translation);
     virtual ngl::Vec3 getCentre() const {return m_centre;}
-    virtual ngl::Vec3 getSize() const {return ngl::Vec3(m_radius, m_radius, m_radius);}
+    virtual ngl::Vec3 getSize() const {return ngl::Vec3(m_radius, m_radius, m_radius);} //get diameter
 
     float getRadius() const { return m_radius; }
 private:

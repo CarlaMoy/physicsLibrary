@@ -47,6 +47,7 @@ public:
     enum{
         TYPE_SPHERE,
         TYPE_AABB,
+        TYPE_PLANE
 
 
       //  TYPE_SIZE
@@ -55,7 +56,7 @@ public:
     Collider(int type) : m_type(type){}
 
     IntersectData intersect(const Collider& other) const;
-    IntersectData intersectGroundPlane();
+   // virtual IntersectData intersectGroundPlane();
 
     virtual void transform(const ngl::Vec3& translation){}
     virtual ngl::Vec3 getCentre() const {return ngl::Vec3(0.0,0.0,0.0);}

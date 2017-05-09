@@ -8,7 +8,7 @@
 
 class AABB : public Collider
 {
-public: 
+public:
     AABB(const float& _width, const float& _height, const float& _depth);
     IntersectData IntersectAABB(const AABB& other) const;
     const ngl::Vec3& getMinPoint() const {return m_minPoint;}
@@ -44,9 +44,9 @@ class AABB : public Collider
 {
 public:
     //AABB(const ngl::Vec3& minPoint, const ngl::Vec3& maxPoint): m_minPoint(minPoint), m_maxPoint(maxPoint){}
-    AABB(const float& _width, const float& _height, const float& _depth);
+    AABB(ngl::Vec3 _position, const float& _width, const float& _height, const float& _depth);
 
-    IntersectData IntersectAABB(const AABB& other) const;
+    IntersectData intersectAABB(const AABB& other) const;
     const ngl::Vec3& getMinPoint() const {return m_minPoint;}
     const ngl::Vec3& getMaxPoint() const {return m_maxPoint;}
 

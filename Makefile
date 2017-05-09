@@ -802,7 +802,9 @@ obj/rigidBody.o: src/rigidBody.cpp include/rigidBody.h \
 		/home/i7466612/NGL/include/ngl/NGLInit.h \
 		/home/i7466612/NGL/include/ngl/VAOPrimitives.h \
 		include/rigidBodyTypeInfo.h \
-		include/boundingSphere.h
+		include/boundingSphere.h \
+		include/aabb.h \
+		/home/i7466612/NGL/include/ngl/NGLStream.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/rigidBody.o src/rigidBody.cpp
 
 obj/boundingSphere.o: src/boundingSphere.cpp include/boundingSphere.h \
@@ -924,7 +926,8 @@ obj/boundingSphere.o: src/boundingSphere.cpp include/boundingSphere.h \
 		/home/i7466612/NGL/include/ngl/VAOPrimitives.h \
 		/home/i7466612/NGL/include/ngl/Vec3.h \
 		/home/i7466612/NGL/include/ngl/AbstractVAO.h \
-		include/collider.h
+		include/collider.h \
+		include/aabb.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/boundingSphere.o src/boundingSphere.cpp
 
 obj/intersectdata.o: src/intersectdata.cpp 
@@ -1172,7 +1175,8 @@ obj/plane.o: src/plane.cpp include/plane.h \
 		/home/i7466612/NGL/include/ngl/VAOPrimitives.h \
 		/home/i7466612/NGL/include/ngl/Vec3.h \
 		/home/i7466612/NGL/include/ngl/AbstractVAO.h \
-		include/collider.h
+		include/collider.h \
+		include/aabb.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/plane.o src/plane.cpp
 
 obj/physicsengine.o: src/physicsengine.cpp include/physicsengine.h \
@@ -1315,8 +1319,10 @@ obj/physicsengine.o: src/physicsengine.cpp include/physicsengine.h \
 		include/rigidBodyTypeInfo.h \
 		/home/i7466612/NGL/include/ngl/SimpleVAO.h \
 		include/boundingSphere.h \
+		include/aabb.h \
 		/home/i7466612/NGL/include/ngl/Random.h \
-		/home/i7466612/NGL/include/ngl/VAOFactory.h
+		/home/i7466612/NGL/include/ngl/VAOFactory.h \
+		/home/i7466612/NGL/include/ngl/NGLStream.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/physicsengine.o src/physicsengine.cpp
 
 obj/collider.o: src/collider.cpp include/collider.h \
@@ -1438,7 +1444,8 @@ obj/collider.o: src/collider.cpp include/collider.h \
 		/home/i7466612/NGL/include/ngl/VAOPrimitives.h \
 		/home/i7466612/NGL/include/ngl/Vec3.h \
 		/home/i7466612/NGL/include/ngl/AbstractVAO.h \
-		include/boundingSphere.h
+		include/boundingSphere.h \
+		include/aabb.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/collider.o src/collider.cpp
 
 obj/NGLScene.o: src/NGLScene.cpp /opt/Qt5.7.0/5.7/gcc_64/include/QtGui/QMouseEvent \
@@ -1611,7 +1618,8 @@ obj/NGLScene.o: src/NGLScene.cpp /opt/Qt5.7.0/5.7/gcc_64/include/QtGui/QMouseEve
 		/home/i7466612/NGL/include/ngl/VAOPrimitives.h \
 		include/rigidBodyTypeInfo.h \
 		/home/i7466612/NGL/include/ngl/Material.h \
-		include/boundingSphere.h
+		include/boundingSphere.h \
+		include/aabb.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/NGLScene.o src/NGLScene.cpp
 
 obj/NGLSceneMouseControls.o: src/NGLSceneMouseControls.cpp 
