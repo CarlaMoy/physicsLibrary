@@ -26,12 +26,16 @@ RigidBody RigidBody::operator=(RigidBody other)
 RigidBody::~RigidBody(){}
 
 
-void RigidBody::integrate(float delta)
+void RigidBody::integrate(float delta, ngl::Vec3 force)
 {
-  m_position += m_velocity * delta;
-  m_velocity += m_gravity * delta;
-//  std::cout<<m_velocity<<" velocity\n";
- // std::cout<<m_position<<" position\n";
+//  m_oldAcceleration = m_acceleration;
+  m_position += m_velocity * delta;// + (0.5 * m_oldAcceleration * delta * delta);
+  m_velocity += ngl::Vec3(0.0,-9.8,0.0) * delta;
+ // m_acceleration = force * delta / m_mass;
+ // m_avg_acceleration = (m_oldAcceleration + m_acceleration) / 2;
+ // m_velocity += m_avg_acceleration * delta;
+  std::cout<<m_velocity<<" velocity\n";
+  std::cout<<m_position<<" position\n";
 }
 
 
@@ -44,7 +48,7 @@ const Collider& RigidBody::getCollider()
   return *m_collider;
 }
 
-void RigidBody::drawRigidBody(const ngl::Mat4 &_globalTx, ngl::Camera *_cam, const std::string _shaderName) const
+void RigidBody::drawRigidBody(const ngl::Mat4 &_globalTx, ngl::Camera *_cam, const std::string _shaderName, ngl::Vec3 _colour) const
 {
   ngl::ShaderLib *shader=ngl::ShaderLib::instance();
   ngl::VAOPrimitives *prim=ngl::VAOPrimitives::instance();
@@ -69,7 +73,7 @@ void RigidBody::drawRigidBody(const ngl::Mat4 &_globalTx, ngl::Camera *_cam, con
     shader->setShaderParamFromMat4("MVP",MVP);
     shader->setShaderParamFromMat3("normalMatrix",normalMatrix);
     std::cout<<m_colour<<"Colour\n";
-    shader->setShaderParam3f("Colour", m_colour.m_r, m_colour.m_g, m_colour.m_b);
+    shader->setShaderParam3f("Colour", _colour.m_x, _colour.m_y, _colour.m_z);//m_colour.m_r, m_colour.m_g, m_colour.m_b);
 
     switch(m_collider->getType())
     {

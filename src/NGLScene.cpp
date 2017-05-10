@@ -9,6 +9,9 @@
 #include <ngl/NGLInit.h>
 #include <ngl/VAOPrimitives.h>
 #include <ngl/ShaderLib.h>
+#include <ngl/Random.h>
+#include <ngl/NGLStream.h>
+
 #include "physicsengine.h"
 #include "boundingSphere.h"
 #include "aabb.h"
@@ -131,17 +134,18 @@ void NGLScene::initializeGL()
   PhysicsEngine *world = PhysicsEngine::instance();
 
                                                 //position            radius            velocity            colour            mass
-  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(5.0,10.0,1.0), 1.0), ngl::Vec3(-1.0,0.0,0.0), ngl::Vec3(1.0,0.1,0.7), 1.0));
-  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(-8.0,8.0,1.0), 6.0), ngl::Vec3(0.0,0.0,0.0), ngl::Vec3(0.1,0.1,0.7), 2.0));
+  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(5.0,10.0,1.0), 1.0), ngl::Vec3(-1.0,0.0,0.0), ngl::Vec3(1.0,0.1,0.3), 1.0));
+  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(-8.0,8.0,1.0), 6.0), ngl::Vec3(0.0,0.0,0.0), ngl::Vec3(0.4,0.1,0.7), 2.0));
 //  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(0.0,5.0,3.0), 0.5), ngl::Vec3(0.0,0.0,0.0), ngl::Vec3(0.1,0.1,0.7), 2.0));
  // world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(6.0,3.0,4.0), 1.0), ngl::Vec3(2.0,0.0,0.0), ngl::Vec3(0.1,0.1,0.7), 1.0));
 //  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(-2.0,7.0,5.0), 1.0), ngl::Vec3(1.0,1.0,0.0), ngl::Vec3(0.1,0.1,0.7), 2.0));
 //  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(-2.0,7.0,10.0), 1.0), ngl::Vec3(1.0,0.0,0.0), ngl::Vec3(0.1,0.1,0.7), 2.0));
-  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(-2.0,7.0,-5.0), 2.0), ngl::Vec3(1.0,1.0,0.0), ngl::Vec3(0.1,0.1,0.7), 2.0));
+  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(-2.0,7.0,-5.0), 2.0), ngl::Vec3(1.0,1.0,0.0), ngl::Vec3(0.1,0.6,0.7), 2.0));
 //  world->addObject(RigidBody(new AABB(ngl::Vec3(5.0,10.0,2.0),1.0,3.0,1.0), ngl::Vec3(0.0,0.0,0.0), ngl::Vec3(0.1,0.5,1.0), 0.5));
 //  world->addObject(RigidBody(new AABB(ngl::Vec3(0.0,10.0,0.0),1.0,1.0,1.0), ngl::Vec3(1.0,0.0,0.0), ngl::Vec3(0.1,0.5,1.0), 0.5));
 //  ///@brief problem with AABB, also need to implement collision detection
 // // world->addObject(RigidBody(new AABB()));
+  world->getObject(0).setColour(ngl::Vec3(0.2,1.0,0.5));
 
 
 
@@ -195,8 +199,11 @@ void NGLScene::drawScene(const std::string &_shader)
 
   // get the VBO instance and draw the built in teapot
   ngl::VAOPrimitives *prim=ngl::VAOPrimitives::instance();
+  ngl::Random *rng=ngl::Random::instance();
 
-  world->drawPhysics(m_mouseGlobalTX, &m_cam, _shader);
+  world->drawPhysics(m_mouseGlobalTX, &m_cam, _shader, world->getObject(0).getColour());
+  std::cout<<world->getObject(0).getColour()<<"colour\n";
+  std::cout<<world->getObject(0).getMass()<<"mass\n";
 
 
   m_transform.reset();
