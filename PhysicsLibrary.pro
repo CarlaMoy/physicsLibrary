@@ -14,7 +14,7 @@ TARGET=PhysicsLibrary
 
 OBJECTS_DIR=obj
 # core Qt Libs to use add more here if needed.
-QT+=gui opengl core
+QT+=gui opengl core widgets
 
 # as I want to support 4.8 and 5 this will set a flag for some of the mac stuff
 # mainly in the types.h file for the setMacVisual which is native in Qt5
@@ -40,7 +40,9 @@ SOURCES+=$$PWD/src/main.cpp \
          $$PWD/src/NGLSceneMouseControls.cpp \
          $$PWD/src/rigidBodyFactory.cpp \
          $$PWD/src/sphere.cpp \
-         $$PWD/src/StaticPlane.cpp
+         $$PWD/src/StaticPlane.cpp \
+    src/MainWindow.cpp
+
 
 
 # same for the .h files
@@ -56,7 +58,8 @@ HEADERS+= $$PWD/include/NGLScene.h \
           $$PWD/include/rigidBodyFactory.h \
           $$PWD/include/rigidBodyTypeInfo.h \
           $$PWD/include/sphere.h \
-          $$PWD/include/StaticPlane.h
+          $$PWD/include/StaticPlane.h \
+    include/MainWindow.h
 
 
 # and add the include dir into the search path for Qt and make
@@ -94,6 +97,10 @@ else{ # note brace must be here
         message("Using custom NGL location")
         include($(NGLDIR)/UseNGL.pri)
 }
+
+FORMS += \
+    UI/MainWindow.ui
+
 
 
 

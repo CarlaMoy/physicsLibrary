@@ -58,10 +58,10 @@ public:
     IntersectData intersect(const Collider& other) const;
    // virtual IntersectData intersectGroundPlane();
 
-    inline virtual void transform(const ngl::Vec3& translation){}
-    inline virtual ngl::Vec3 getCentre() const {return ngl::Vec3(0.0,0.0,0.0);}
-    inline virtual ngl::Vec3 getSize() const{return ngl::Vec3(1.0,1.0,1.0);}
-    inline int getType() const {return m_type;}
+    virtual void transform(const ngl::Vec3& translation){}
+    virtual ngl::Vec3 getCentre() const {return ngl::Vec3(0.0,0.0,0.0);}
+    virtual ngl::Vec3 getSize() const{return ngl::Vec3(1.0,1.0,1.0);}
+    int getType() const {return m_type;}
 
 private:
     int m_type;

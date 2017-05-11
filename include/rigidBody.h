@@ -12,12 +12,10 @@
 
 
 
-class PhysicsEngine;
-
 class RigidBody
 {
 public:
-    RigidBody(Collider* collider, const ngl::Vec3& velocity, ngl::Vec3 colour, float mass) :
+    RigidBody(Collider* collider, const ngl::Vec3& velocity, const ngl::Vec3 &colour, float mass) :
                                                             m_position(collider->getCentre()),
                                                             m_oldPosition(collider->getCentre()),
                                                             m_velocity(velocity),
@@ -25,27 +23,27 @@ public:
                                                             m_acceleration(ngl::Vec3(0.0,0.0,0.0)),
                                                             m_mass(mass),
                                                             m_collider(collider){}
-    RigidBody(const RigidBody& other);
-    RigidBody operator=(RigidBody other);
-    virtual ~RigidBody();
+    RigidBody(const RigidBody& other)=default;
+ //   RigidBody operator=(RigidBody other);
+    ~RigidBody();
 
     void integrate(float delta, ngl::Vec3 force);
     /// @brief Method to update rigid body
    // virtual void updateRigidBody(ngl::Transformation &_transform,const ngl::Mat4 &_globalTx, ngl::Camera *_cam, float _delta ) const;
     /// @brief Method to draw rigid body
-    virtual void drawRigidBody(const ngl::Mat4 &_globalTx, ngl::Camera *_cam, const std::string _shaderName, ngl::Vec3 _colour) const;
+    void drawRigidBody(const ngl::Mat4 &_globalTx, ngl::Camera *_cam, const std::string _shaderName, ngl::Vec3 _colour) const;
                               //ngl::Transformation &_transform,
-    inline const ngl::Vec3& getPosition() const {return m_position;}
-    inline const ngl::Vec3& getVelocity() const {return m_velocity;}
-    inline const ngl::Vec3& getColour() const {return m_colour;}
-    inline const float& getMass() const {return m_mass;}
-    const Collider& getCollider();
+    const ngl::Vec3& getPosition() const {return m_position;}
+    const ngl::Vec3& getVelocity() const {return m_velocity;}
+    const ngl::Vec3& getColour() const {return m_colour;}
+    const float& getMass() const {return m_mass;}
+    const Collider& transformCollider();
     //virtual RigidBodyType getType() const{};
 
 
-    inline void setPosition(ngl::Vec3 position) {m_position = position;}
-    inline void setVelocity(ngl::Vec3 velocity) {m_velocity = velocity;}
-    inline void setColour(ngl::Vec3 newColour) {m_colour = newColour;}
+    void setPosition(ngl::Vec3 position) {m_position = position;}
+    void setVelocity(ngl::Vec3 velocity) {m_velocity = velocity;}
+    void setColour(ngl::Vec3 newColour) {m_colour = newColour;}
 
 
 private:
@@ -62,7 +60,6 @@ private:
     bool m_isDynamic;
 
     Collider* m_collider;
- //   PhysicsEngine *m_parent;
 
 };
 

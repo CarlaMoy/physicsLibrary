@@ -6,7 +6,7 @@
 #include <ngl/Transformation.h>
 #include <ngl/Text.h>
 #include "WindowParams.h"
-#include <QOpenGLWindow>
+#include <QOpenGLWidget>
 #include <memory>
 #include "physicsengine.h"
 
@@ -23,14 +23,14 @@
 /// put in this file
 //----------------------------------------------------------------------------------------------------------------------
 
-class NGLScene : public QOpenGLWindow
+class NGLScene : public QOpenGLWidget
 {
   public:
     //----------------------------------------------------------------------------------------------------------------------
     /// @brief ctor for our NGL drawing class
     /// @param [in] parent the parent window to the class
     //----------------------------------------------------------------------------------------------------------------------
-    NGLScene();
+    NGLScene(QWidget *_parent);
     //----------------------------------------------------------------------------------------------------------------------
     /// @brief dtor must close down ngl and release OpenGL resources
     //----------------------------------------------------------------------------------------------------------------------
@@ -142,6 +142,8 @@ private:
     /// @param[in] _shader the name of the shader to use when drawing
     //----------------------------------------------------------------------------------------------------------------------
     void drawScene(const std::string &_shader);
+
+    bool m_isWireframe = false;
 
 
 

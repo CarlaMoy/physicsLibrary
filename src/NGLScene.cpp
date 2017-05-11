@@ -18,10 +18,12 @@
 
 //PhysicsEngine *world = NULL;
 
-NGLScene::NGLScene()
+NGLScene::NGLScene(QWidget *_parent) : QOpenGLWidget(_parent)
 {
-  setTitle("Physics Engine");
+ // setTitle("Physics Engine");
   m_animate=true;
+  setFocusPolicy(Qt::StrongFocus);
+
 }
 
 
@@ -134,20 +136,25 @@ void NGLScene::initializeGL()
   PhysicsEngine *world = PhysicsEngine::instance();
 
                                                 //position            radius            velocity            colour            mass
-  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(5.0,10.0,1.0), 1.0), ngl::Vec3(-1.0,0.0,0.0), ngl::Vec3(1.0,0.1,0.3), 1.0));
-  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(-8.0,8.0,1.0), 6.0), ngl::Vec3(0.0,0.0,0.0), ngl::Vec3(0.4,0.1,0.7), 2.0));
-//  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(0.0,5.0,3.0), 0.5), ngl::Vec3(0.0,0.0,0.0), ngl::Vec3(0.1,0.1,0.7), 2.0));
+//  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(5.0,10.0,1.0), 1.0), ngl::Vec3(-0.3,0.0,0.0), ngl::Vec3(1.0,0.1,0.3), 1.0));
+  world->addObject(new BoundingSphere(ngl::Vec3(5.0,4.0,1.0), 1.0), ngl::Vec3(0.0,0.0,0.0), ngl::Vec3(0.4,0.1,0.7), 2.0);
+  world->addObject(new BoundingSphere(ngl::Vec3(0.0,5.0,3.0), 0.5), ngl::Vec3(0.0,0.0,0.0), ngl::Vec3(0.1,0.1,0.7), 5.0);
  // world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(6.0,3.0,4.0), 1.0), ngl::Vec3(2.0,0.0,0.0), ngl::Vec3(0.1,0.1,0.7), 1.0));
 //  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(-2.0,7.0,5.0), 1.0), ngl::Vec3(1.0,1.0,0.0), ngl::Vec3(0.1,0.1,0.7), 2.0));
 //  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(-2.0,7.0,10.0), 1.0), ngl::Vec3(1.0,0.0,0.0), ngl::Vec3(0.1,0.1,0.7), 2.0));
-  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(-2.0,7.0,-5.0), 2.0), ngl::Vec3(1.0,1.0,0.0), ngl::Vec3(0.1,0.6,0.7), 2.0));
+//  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(-2.0,7.0,-5.0), 2.0), ngl::Vec3(1.0,1.0,0.0), ngl::Vec3(0.1,0.6,0.7), 2.0));
 //  world->addObject(RigidBody(new AABB(ngl::Vec3(5.0,10.0,2.0),1.0,3.0,1.0), ngl::Vec3(0.0,0.0,0.0), ngl::Vec3(0.1,0.5,1.0), 0.5));
 //  world->addObject(RigidBody(new AABB(ngl::Vec3(0.0,10.0,0.0),1.0,1.0,1.0), ngl::Vec3(1.0,0.0,0.0), ngl::Vec3(0.1,0.5,1.0), 0.5));
 //  ///@brief problem with AABB, also need to implement collision detection
 // // world->addObject(RigidBody(new AABB()));
-  world->getObject(0).setColour(ngl::Vec3(0.2,1.0,0.5));
+//  world->getObject(0).setColour(ngl::Vec3(0.2,1.0,0.5));
 
+ // RigidBody a(new BoundingSphere(ngl::Vec3(5.0,10.0,1.0), 1.0),ngl::Vec3(5.0,10.0,1.0),ngl::Vec3(1.,1.0,1.0),4.f);
 
+ // std::cout<< "---------------------> "<<a.getMass() <<std::endl;
+
+  world->addObject(new BoundingSphere(ngl::Vec3(5.0,10.0,1.0), 1.0),ngl::Vec3(-0.3,0.0,0.0), ngl::Vec3(1.0,0.1,0.3), 1.0);
+  std::cout<< "---------------------> "<<world->getObject(0).getMass() <<std::endl;
 
 
 
@@ -202,8 +209,9 @@ void NGLScene::drawScene(const std::string &_shader)
   ngl::Random *rng=ngl::Random::instance();
 
   world->drawPhysics(m_mouseGlobalTX, &m_cam, _shader, world->getObject(0).getColour());
-  std::cout<<world->getObject(0).getColour()<<"colour\n";
+  std::cout<<world->getObject(1).getColour()<<"colour\n";
   std::cout<<world->getObject(0).getMass()<<"mass\n";
+  std::cout<<world->getObject(0).getVelocity()<<"velocity\n";
 
 
   m_transform.reset();
@@ -228,11 +236,16 @@ void NGLScene::drawScene(const std::string &_shader)
 void NGLScene::paintGL()
 {
 
-
+  if(m_isWireframe)
+  {
+    glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+  }
   // clear the screen and depth buffer
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glViewport(0,0,m_win.width,m_win.height);
   drawScene("Phong");
+
+  glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 
 
 }
@@ -323,6 +336,7 @@ void NGLScene::wheelEvent( QWheelEvent* _event )
 void NGLScene::keyPressEvent(QKeyEvent *_event)
 {
   PhysicsEngine *world = PhysicsEngine::instance();
+  ngl::Random *rng=ngl::Random::instance();
   // this method is called every time the main window recives a key event.
   // we then switch on the key value and set the camera in the GLWindow
   switch (_event->key())
@@ -330,19 +344,23 @@ void NGLScene::keyPressEvent(QKeyEvent *_event)
   // escape key to quite
   case Qt::Key_Escape : QGuiApplication::exit(EXIT_SUCCESS); break;
     // turn on wirframe rendering
-  case Qt::Key_W : glPolygonMode(GL_FRONT_AND_BACK,GL_LINE); break;
+  case Qt::Key_W : m_isWireframe = true; glPolygonMode(GL_FRONT_AND_BACK,GL_LINE); break;
     // turn off wire frame
-  case Qt::Key_S : glPolygonMode(GL_FRONT_AND_BACK,GL_FILL); break;
+  case Qt::Key_S : m_isWireframe = false; glPolygonMode(GL_FRONT_AND_BACK,GL_FILL); break;
     // show full screen
   case Qt::Key_F : showFullScreen(); break;
     // show windowed
   case Qt::Key_N : showNormal(); break;
   case Qt::Key_Space : m_animate^=true; break;
-  case Qt::Key_A : world->addObject(RigidBody(new AABB(ngl::Vec3(0.0,10.0,0.0),1.0,1.0,1.0), ngl::Vec3(1.0,0.0,0.0), ngl::Vec3(0.1,0.5,1.0), 0.5)); break;
+  case Qt::Key_A :world->addObject(new BoundingSphere(ngl::Vec3(rng->randomPositiveNumber(1),5,rng->randomPositiveNumber(1)), rng->randomPositiveNumber(1)),rng->getRandomVec3(), ngl::Vec3(1.0,0.1,0.3), 1.0); break;
+  case Qt::Key_Up : world->addWind(ngl::Vec3(0.0,0.05,0.0)); break;
+  case Qt::Key_Down : world->addWind(ngl::Vec3(0.0,-0.05,0.0)); break;
+  case Qt::Key_Left : world->addWind(ngl::Vec3(-0.05,0.0,0.0)); break;
+  case Qt::Key_Right : world->addWind(ngl::Vec3(0.05,0.0,0.0)); break;
   default : break;
   }
   // finally update the GLWindow and re-draw
-  if (isExposed())
+  //if (isExposed())
     update();
 }
 
@@ -365,9 +383,9 @@ void NGLScene::timerEvent(QTimerEvent *_event )
   // if the timer is the light timer call the update light method
   if(_event->timerId() == m_physicsTimer  && m_animate==true)
   {
-    updateLight();
+ //   updateLight();
 
-    world->updatePhysics(0.005);
+    world->updatePhysics(0.02);
    // world->handleCollisions();
   }
   // re-draw GL

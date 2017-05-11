@@ -50,9 +50,9 @@ public:
     const ngl::Vec3& getMinPoint() const {return m_minPoint;}
     const ngl::Vec3& getMaxPoint() const {return m_maxPoint;}
 
-    virtual void transform(const ngl::Vec3& translation);
-    virtual ngl::Vec3 getCentre() const {return m_centre;}
-    virtual ngl::Vec3 getSize() const {return ngl::Vec3(m_width, m_height, m_depth);}
+    void transform(const ngl::Vec3& translation) override;
+    ngl::Vec3 getCentre() const override {return m_centre;}
+    ngl::Vec3 getSize() const override {return ngl::Vec3(m_width, m_height, m_depth);}
 
 private:
     float m_width, m_height, m_depth;

@@ -21,15 +21,26 @@ PhysicsEngine* PhysicsEngine::instance()
 PhysicsEngine::~PhysicsEngine(){}
 
 
-void PhysicsEngine::addObject(const RigidBody& object)
+void PhysicsEngine::addObject(Collider* _collider, const ngl::Vec3& _velocity, ngl::Vec3 _colour, float _mass)
 {
-  m_rigidObjects.push_back(object);
+  RigidBody rigidObject(_collider, _velocity, _colour, _mass);
+  //   new BoundingSphere(ngl::Vec3(5.0,10.0,1.0), 1.0),ngl::Vec3(5.0,10.0,1.0),ngl::Vec3(1.,1.0,1.0),4.f);
+  m_rigidObjects.push_back(rigidObject);
 
 }
 
+/*void PhysicsEngine::addObject(const RigidBody& object)
+{
+//  RigidBody rigidObject(Collider* _collider, const ngl::Vec3& _velocity, ngl::Vec3 _colour, float _mass
+ //       new BoundingSphere(ngl::Vec3(5.0,10.0,1.0), 1.0),ngl::Vec3(5.0,10.0,1.0),ngl::Vec3(1.,1.0,1.0),4.f);
+  m_rigidObjects.push_back(object);
+
+}*/
+
 ngl::Vec3 PhysicsEngine::applyForces()
 {
- return m_gravity + m_wind;
+
+  return m_gravity + m_wind;
 }
 
 void PhysicsEngine::addWind(ngl::Vec3 _amount)
@@ -50,14 +61,14 @@ void PhysicsEngine::handleCollisions()
 {
 
 
-  for(unsigned int i = 0; i < m_rigidObjects.size(); i++)
+  for(unsigned int i = 0; i < m_rigidObjects.size(); ++i)
   {
-    for(unsigned int j = i+1; j < m_rigidObjects.size(); j++) //change this implementation to j = 0, then if(i==j) continue
+    for(unsigned int j = i+1; j < m_rigidObjects.size(); ++j)
     {
-      //if(i==j) continue;
+      // if(i==j) continue;
       ///@brief Gets whether objects intersect and the direction of intersection between BoundingSphere-BoundingSphere,
       /// BoundingSphere-AABB, AABB-AABB.
-      IntersectData intersectData = m_rigidObjects[i].getCollider().intersect(m_rigidObjects[j].getCollider());
+      IntersectData intersectData = m_rigidObjects[i].transformCollider().intersect(m_rigidObjects[j].transformCollider());
       //  IntersectData groundSphereData = m_rigidObjects[i].getCollider().intersect();
       //   std::cout<<intersectData.GetDoesIntersect()<< "Intersect?\n";
       //   std::cout<<m_rigidObjects[i].getCollider().getSize()<<"Size\n";
@@ -71,36 +82,39 @@ void PhysicsEngine::handleCollisions()
         m_rigidObjects[j].setVelocity(ngl::Vec3(m_rigidObjects[j].getVelocity().reflect(direction)));
       }
     }
-    ///@brief Collision response based on objects intersecting the ground plane.
-    if((m_rigidObjects[i].getPosition().m_y - m_rigidObjects[i].getCollider().getSize().m_y) < m_groundPlane_y)
+    //  std::cout<<m_rigidObjects[i].getPosition().m_y<<"position\n";
+
+  }
+}
+
+void PhysicsEngine::checkGroundCollision()
+{
+  ///@brief Collision response based on objects intersecting the ground plane.
+  for(auto& i : m_rigidObjects)
+  {
+    if((i.getPosition().m_y - i.transformCollider().getSize().m_y) < m_groundPlane_y)
     {
-      //      m_rigidObjects[i].setVelocity(ngl::Vec3(0.0,0.0,0.0));
       ngl::Vec3 normal = ngl::Vec3(0.0,1.0,0.0);
-      //float velocityDampFa
-      //     float dist = normal.dot(m_rigidObjects[i].getPosition());
-      //    float dist = m_rigidObjects[i].getPosition().m_y;
-      //   m_rigidObjects[i].setPosition(m_rigidObjects[i].getPosition() - normal * abs(dist));// + m_rigidObjects[i].getCollider().getSize());
-      //m_rigidObjects[i].setPosition(m_rigidObjects[i].getPosition() + ngl::Vec3(0.0,m_rigidObjects[i].getCollider().getSize().m_y,0.0));
-      m_rigidObjects[i].setVelocity(ngl::Vec3(m_rigidObjects[i].getVelocity().reflect(normal)));//*0.991));
+      i.setVelocity(ngl::Vec3(i.getVelocity().reflect(normal)));//*0.991));
     }
   }
 }
 
 
-
 void PhysicsEngine::updatePhysics(float _time)
 {
-  std::cout<<"updating\n";
+  // std::cout<<"updating\n";
   for(auto& i : m_rigidObjects)
   {
     i.integrate(_time, applyForces());
-    handleCollisions();
   }
+  handleCollisions();
+  checkGroundCollision();
 }
 
 void PhysicsEngine::drawPhysics(const ngl::Mat4 &_globalTx, ngl::Camera *_cam, const std::string _shaderName, ngl::Vec3 _colour)
 {
-  std::cout<<"drawing\n";
+  // std::cout<<"drawing\n";
   for(auto& i : m_rigidObjects)
   {
     i.drawRigidBody(_globalTx, _cam, _shaderName, _colour);

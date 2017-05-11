@@ -1,4 +1,4 @@
-#ifndef PLANE_H
+/*#ifndef PLANE_H
 #define PLANE_H
 
 #include <glm/glm.hpp>
@@ -17,8 +17,8 @@ public:
     IntersectData intersectSphere(const BoundingSphere& other) const;
     IntersectData intersectAABB(const AABB& other) const;
 
-    virtual ngl::Vec3 getCentre() const {return m_normal;} //might be wrong
-    virtual ngl::Vec3 getSize() const {return ngl::Vec3(m_distance, m_distance, m_distance);}
+    ngl::Vec3 getCentre() const {return m_normal;} //might be wrong
+    ngl::Vec3 getSize() const {return ngl::Vec3(m_distance, m_distance, m_distance);}
 
     const ngl::Vec3& getNormal() const {return m_normal;}
     float getDistance() const {return m_distance;}
@@ -28,4 +28,4 @@ private:
 };
 
 
-#endif // PLANE_H
+#endif // PLANE_H*/

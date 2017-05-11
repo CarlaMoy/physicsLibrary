@@ -17,9 +17,11 @@ public:
 
 
   //  void initWorld();
-    void addObject(const RigidBody& object);
+   // void addObject(const RigidBody& object);
+    void addObject(Collider* _collider, const ngl::Vec3& _velocity, ngl::Vec3 _colour, float _mass);
   //  void simulate(float delta);
     void handleCollisions();
+    void checkGroundCollision();
     void updatePhysics(float _time);
     void drawPhysics(const ngl::Mat4 &_globalTx, ngl::Camera *_cam, const std::string _shaderName, ngl::Vec3 _colour);
     void setGravity();
@@ -29,7 +31,7 @@ public:
 
 
 
-    inline RigidBody getObject(unsigned int index) const
+    RigidBody getObject(unsigned int index) const
     {
         if(index <= m_rigidObjects.size())
             return m_rigidObjects[index];
@@ -38,7 +40,7 @@ public:
           exit(1);
     }
 
-    inline unsigned int getNumObjects() const
+    unsigned int getNumObjects() const
     {
         return (unsigned int) m_rigidObjects.size();
     }
@@ -53,6 +55,7 @@ private:
     float m_groundPlane_y = 0.01;
     ngl::Vec3 m_gravity = ngl::Vec3(0.0,-9.8,0.0);
     ngl::Vec3 m_wind;
+
     //ngl::Vec3 m_groundPlane_y = ngl::Vec3(0.0,0.0,0.0);
 
 

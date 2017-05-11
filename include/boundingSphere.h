@@ -45,10 +45,10 @@ public:
 
 
     IntersectData intersectGroundPlane();
-    virtual void transform(const ngl::Vec3& translation);
-    inline virtual ngl::Vec3 getCentre() const {return m_centre;}
-    inline virtual ngl::Vec3 getSize() const {return ngl::Vec3(m_radius, m_radius, m_radius);} //get diameter
-    inline float getRadius() const { return m_radius; }
+    void transform(const ngl::Vec3& translation) override;
+    ngl::Vec3 getCentre() const override {return m_centre;}
+    ngl::Vec3 getSize() const override {return ngl::Vec3(m_radius, m_radius, m_radius);} //get diameter
+    float getRadius() const { return m_radius; }
 
 private:
     ngl::Vec3 m_centre;

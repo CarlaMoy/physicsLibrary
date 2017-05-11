@@ -1,4 +1,4 @@
-#include "plane.h"
+/*#include "plane.h"
 
 Plane Plane::normalised() const
 {
@@ -19,4 +19,4 @@ IntersectData Plane::intersectSphere(const BoundingSphere& other) const
 IntersectData Plane::intersectAABB(const AABB& other) const
 {
 
-}
+}*/
