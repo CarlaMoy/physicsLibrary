@@ -137,11 +137,11 @@ void NGLScene::initializeGL()
 
                                                 //position            radius            velocity            colour            mass
 //  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(5.0,10.0,1.0), 1.0), ngl::Vec3(-0.3,0.0,0.0), ngl::Vec3(1.0,0.1,0.3), 1.0));
-  world->addObject(new BoundingSphere(ngl::Vec3(5.0,4.0,1.0), 1.0), ngl::Vec3(0.0,0.0,0.0), ngl::Vec3(0.4,0.1,0.7), 2.0);
-  world->addObject(new BoundingSphere(ngl::Vec3(0.0,5.0,3.0), 0.5), ngl::Vec3(0.0,0.0,0.0), ngl::Vec3(0.1,0.1,0.7), 5.0);
- // world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(6.0,3.0,4.0), 1.0), ngl::Vec3(2.0,0.0,0.0), ngl::Vec3(0.1,0.1,0.7), 1.0));
-//  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(-2.0,7.0,5.0), 1.0), ngl::Vec3(1.0,1.0,0.0), ngl::Vec3(0.1,0.1,0.7), 2.0));
-//  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(-2.0,7.0,10.0), 1.0), ngl::Vec3(1.0,0.0,0.0), ngl::Vec3(0.1,0.1,0.7), 2.0));
+ // world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(5.0,4.0,1.0), 1.0), ngl::Vec3(0.0,0.0,0.0), ngl::Vec3(0.4,0.1,0.7), 2.0, 2.0));
+ // world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(0.0,5.0,3.0), 0.5), ngl::Vec3(0.0,0.0,0.0), ngl::Vec3(0.1,0.1,0.7), 5.0, 1.5));
+//  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(6.0,3.0,4.0), 1.0), ngl::Vec3(2.0,0.0,0.0), ngl::Vec3(0.1,0.1,0.7), 1.0, 2.0));
+ // world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(-2.0,7.0,5.0), 1.0), ngl::Vec3(1.0,1.0,0.0), ngl::Vec3(0.1,0.1,0.7), 2.0, 0.03));
+//  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(-2.0,7.0,10.0), 1.0), ngl::Vec3(1.0,0.0,1.0), ngl::Vec3(0.1,0.1,0.7), 2.0, 5.0));
 //  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(-2.0,7.0,-5.0), 2.0), ngl::Vec3(1.0,1.0,0.0), ngl::Vec3(0.1,0.6,0.7), 2.0));
 //  world->addObject(RigidBody(new AABB(ngl::Vec3(5.0,10.0,2.0),1.0,3.0,1.0), ngl::Vec3(0.0,0.0,0.0), ngl::Vec3(0.1,0.5,1.0), 0.5));
 //  world->addObject(RigidBody(new AABB(ngl::Vec3(0.0,10.0,0.0),1.0,1.0,1.0), ngl::Vec3(1.0,0.0,0.0), ngl::Vec3(0.1,0.5,1.0), 0.5));
@@ -153,13 +153,17 @@ void NGLScene::initializeGL()
 
  // std::cout<< "---------------------> "<<a.getMass() <<std::endl;
 
-  world->addObject(new BoundingSphere(ngl::Vec3(5.0,10.0,1.0), 1.0),ngl::Vec3(-0.3,0.0,0.0), ngl::Vec3(1.0,0.1,0.3), 1.0);
+  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(5.0,10.0,1.0), 1.0),ngl::Vec3(-4.0,0.0,0.0), ngl::Vec3(1.0,0.1,0.3), 1.0, 2.0));
   std::cout<< "---------------------> "<<world->getObject(0).getMass() <<std::endl;
 
+  int numSpheres = 50;
 
-
-
-
+  for(int i=0; i<numSpheres; ++i)
+  {
+    ngl::Random *rng=ngl::Random::instance();
+    world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(rng->randomNumber(100),rng->randomPositiveNumber(50),rng->randomNumber(100)),
+                               rng->randomPositiveNumber(5)),rng->getRandomVec3(), rng->getRandomVec3(), rng->randomPositiveNumber(1), 2.0));
+  }
 }
 
 
@@ -206,7 +210,7 @@ void NGLScene::drawScene(const std::string &_shader)
 
   // get the VBO instance and draw the built in teapot
   ngl::VAOPrimitives *prim=ngl::VAOPrimitives::instance();
-  ngl::Random *rng=ngl::Random::instance();
+ // ngl::Random *rng=ngl::Random::instance();
 
   world->drawPhysics(m_mouseGlobalTX, &m_cam, _shader, world->getObject(0).getColour());
   std::cout<<world->getObject(1).getColour()<<"colour\n";
@@ -220,16 +224,6 @@ void NGLScene::drawScene(const std::string &_shader)
     loadMatricesToShader();
     prim->draw("plane");
   } // and before a pop
-
-
-
-
-
-
-
-
-
-
 
 }
 
@@ -352,9 +346,15 @@ void NGLScene::keyPressEvent(QKeyEvent *_event)
     // show windowed
   case Qt::Key_N : showNormal(); break;
   case Qt::Key_Space : m_animate^=true; break;
-  case Qt::Key_A :world->addObject(new BoundingSphere(ngl::Vec3(rng->randomPositiveNumber(1),5,rng->randomPositiveNumber(1)), rng->randomPositiveNumber(1)),rng->getRandomVec3(), ngl::Vec3(1.0,0.1,0.3), 1.0); break;
-  case Qt::Key_Up : world->addWind(ngl::Vec3(0.0,0.05,0.0)); break;
-  case Qt::Key_Down : world->addWind(ngl::Vec3(0.0,-0.05,0.0)); break;
+  case Qt::Key_A :world->addObject(RigidBody(new AABB(ngl::Vec3(rng->randomNumber(100),rng->randomPositiveNumber(50),rng->randomNumber(100)), rng->randomPositiveNumber(5),rng->randomPositiveNumber(5),rng->randomPositiveNumber(5)),rng->getRandomVec3(), rng->getRandomVec3(), rng->randomPositiveNumber(1), 2.0)); break;
+  case Qt::Key_B :world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(rng->randomNumber(100),rng->randomPositiveNumber(50),rng->randomNumber(100)), rng->randomPositiveNumber(5)),rng->getRandomVec3(), rng->getRandomVec3(), rng->randomPositiveNumber(1), 2.0)); break;
+  case Qt::Key_G : world->setGravity();
+
+
+  case Qt::Key_1 : world->addWind(ngl::Vec3(0.0,9.8,0.0)); break;
+  case Qt::Key_2 : world->addWind(ngl::Vec3(0.0,-9.8,0.0)); break;
+  case Qt::Key_Up : world->addWind(ngl::Vec3(0.0,0.0,-0.05)); break;
+  case Qt::Key_Down : world->addWind(ngl::Vec3(0.0,0.0,0.05)); break;
   case Qt::Key_Left : world->addWind(ngl::Vec3(-0.05,0.0,0.0)); break;
   case Qt::Key_Right : world->addWind(ngl::Vec3(0.05,0.0,0.0)); break;
   default : break;
@@ -385,7 +385,7 @@ void NGLScene::timerEvent(QTimerEvent *_event )
   {
  //   updateLight();
 
-    world->updatePhysics(0.02);
+    world->updatePhysics(0.08);
    // world->handleCollisions();
   }
   // re-draw GL

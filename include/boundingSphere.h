@@ -35,13 +35,16 @@ private:
 #include "aabb.h"
 #include <ngl/NGLInit.h>
 
+class AABB;
+
 class BoundingSphere : public Collider
 {
 public:
     BoundingSphere(const ngl::Vec3& centre, float radius) : Collider(Collider::TYPE_SPHERE), m_centre(centre), m_radius(radius){}
+    ~BoundingSphere(){}
 
-    IntersectData intersectBoundingSphere(const BoundingSphere& other) const;
-    IntersectData intersectAABB(const AABB& other) const;
+    IntersectData sphereIntersectBoundingSphere(const BoundingSphere& other) const;
+    IntersectData sphereIntersectAABB(const AABB& other) const;
 
 
     IntersectData intersectGroundPlane();

@@ -9,6 +9,7 @@ class IntersectData
 public:
     //Constructor for intersect data
     IntersectData(const bool doesIntersect, const ngl::Vec3 direction): m_doesIntersect(doesIntersect), m_direction(direction){}
+    ~IntersectData(){}
     //Check whether object is intersecting function
     bool GetDoesIntersect() const{ return m_doesIntersect;}
     //Returns distance scalar

@@ -18,14 +18,14 @@ public:
 
   //  void initWorld();
    // void addObject(const RigidBody& object);
-    void addObject(Collider* _collider, const ngl::Vec3& _velocity, ngl::Vec3 _colour, float _mass);
+    void addObject(const RigidBody& object);//Collider* _collider, const ngl::Vec3& _velocity, ngl::Vec3 _colour, float _mass, float _frictionCoeff);
   //  void simulate(float delta);
     void handleCollisions();
-    void checkGroundCollision();
+    void checkGroundWallCollision();
     void updatePhysics(float _time);
     void drawPhysics(const ngl::Mat4 &_globalTx, ngl::Camera *_cam, const std::string _shaderName, ngl::Vec3 _colour);
     void setGravity();
-    ngl::Vec3 applyForces();
+    ngl::Vec3 applyWorldForces();
     void addWind(ngl::Vec3 _amount);
 
 
@@ -52,9 +52,10 @@ private:
     std::vector<RigidBody> m_rigidObjects;
     //std::unique_ptr<ngl::AbstractVAO> m_vao;
     bool m_gravOn;
-    float m_groundPlane_y = 0.01;
+    float m_groundPlane_y = 0.0f;
     ngl::Vec3 m_gravity = ngl::Vec3(0.0,-9.8,0.0);
     ngl::Vec3 m_wind;
+    ngl::Vec3 m_friction;
 
     //ngl::Vec3 m_groundPlane_y = ngl::Vec3(0.0,0.0,0.0);
 

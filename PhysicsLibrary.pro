@@ -41,6 +41,8 @@ SOURCES+=$$PWD/src/main.cpp \
          $$PWD/src/rigidBodyFactory.cpp \
          $$PWD/src/sphere.cpp \
          $$PWD/src/StaticPlane.cpp \
+         $$PWD/src/AbstractOctree.cpp \
+         $$PWD/src/RigidBodyOctree.cpp
     src/MainWindow.cpp
 
 
@@ -59,6 +61,8 @@ HEADERS+= $$PWD/include/NGLScene.h \
           $$PWD/include/rigidBodyTypeInfo.h \
           $$PWD/include/sphere.h \
           $$PWD/include/StaticPlane.h \
+          $$PWD/include/AbstractOctree.h \
+          $$PWD/include/RigidBodyOctree.h
     include/MainWindow.h
 
 

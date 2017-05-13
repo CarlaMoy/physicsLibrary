@@ -29,14 +29,40 @@ RigidBody::~RigidBody(){}
 
 void RigidBody::integrate(float delta, ngl::Vec3 force)
 {
+  force += applyObjectForces();
   m_oldAcceleration = m_acceleration;
   m_position += m_velocity * delta + (0.5 * m_oldAcceleration * delta * delta);
  // m_velocity += ngl::Vec3(0.0,-9.8,0.0) * delta;
   m_acceleration = force * delta / 0.2;//m_mass;
   m_avg_acceleration = (m_oldAcceleration + m_acceleration) / 2;
   m_velocity += m_avg_acceleration * delta;
- // std::cout<<m_velocity<<" velocity\n";
+  if(m_acceleration.m_y < 0.4 && m_acceleration.m_y > -0.4)
+    m_velocity = 0.0;
+  std::cout<<m_acceleration<<" acceleration\n";
  // std::cout<<m_position<<" position\n";
+}
+
+ngl::Vec3 RigidBody::calculateFriction()
+{
+  ngl::Vec3 friction = -m_velocity;
+  friction.normalize();
+  friction *= m_frictionCoeff;
+  return friction;
+}
+
+ngl::Vec3 RigidBody::calculateDrag()
+{
+  float speed = m_velocity.length();
+  float dragMagnitude = speed * speed * m_frictionCoeff; //drag coefficient and friction coefficient are the same value for now
+  ngl::Vec3 drag = -m_velocity;
+  drag.normalize();
+  drag *= dragMagnitude;
+  return drag*0.1;
+
+}
+ngl::Vec3 RigidBody::applyObjectForces()
+{
+  return calculateFriction() + calculateDrag();
 }
 
 

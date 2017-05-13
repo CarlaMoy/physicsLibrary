@@ -54,13 +54,14 @@ public:
     };
 
     Collider(int type) : m_type(type){}
+    ~Collider(){}
 
     IntersectData intersect(const Collider& other) const;
    // virtual IntersectData intersectGroundPlane();
 
-    virtual void transform(const ngl::Vec3& translation){}
-    virtual ngl::Vec3 getCentre() const {return ngl::Vec3(0.0,0.0,0.0);}
-    virtual ngl::Vec3 getSize() const{return ngl::Vec3(1.0,1.0,1.0);}
+    virtual void transform(const ngl::Vec3& translation) = 0;
+    virtual ngl::Vec3 getCentre() const = 0;
+    virtual ngl::Vec3 getSize() const = 0;
     int getType() const {return m_type;}
 
 private:

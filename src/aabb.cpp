@@ -13,7 +13,7 @@ AABB::AABB(ngl::Vec3 _position, const float& _width, const float& _height, const
 }
 
 
-IntersectData AABB::intersectAABB(const AABB& other) const
+IntersectData AABB::AABBintersectAABB(const AABB& other) const
 {
   ngl::Vec3 dist1 = other.getMinPoint() - m_maxPoint;
   ngl::Vec3 dist2 = m_minPoint - other.getMaxPoint();
@@ -37,6 +37,30 @@ IntersectData AABB::intersectAABB(const AABB& other) const
 
 
 }
+
+IntersectData AABB::AABBintersectBoundingSphere(const BoundingSphere& other) const
+{
+  //http://stackoverflow.com/questions/4578967/cube-sphere-intersection-test
+  float r2 = other.getRadius() * other.getRadius();
+  float dmin = 0;
+
+  if(other.getCentre().m_x < m_minPoint.m_x)
+    dmin += sqrt(other.getCentre().m_x - m_minPoint.m_x);
+  else if(other.getCentre().m_x > m_maxPoint.m_x)
+    dmin += sqrt(other.getCentre().m_x - m_maxPoint.m_x);
+  if(other.getCentre().m_y < m_minPoint.m_y)
+    dmin += sqrt(other.getCentre().m_y - m_minPoint.m_y);
+  else if(other.getCentre().m_y > m_maxPoint.m_y)
+    dmin += sqrt(other.getCentre().m_y - m_maxPoint.m_y);
+  if(other.getCentre().m_z < m_minPoint.m_z)
+    dmin += sqrt(other.getCentre().m_z - m_minPoint.m_z);
+  else if(other.getCentre().m_z > m_maxPoint.m_z)
+    dmin += sqrt(other.getCentre().m_z - m_maxPoint.m_z);
+
+
+  return IntersectData(dmin <= r2, ngl::Vec3(0.0,1.0,0.0));
+}
+
 ///@brief Could avoid duplicate code
 void AABB::transform(const ngl::Vec3& _translation)
 {

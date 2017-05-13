@@ -1,6 +1,6 @@
 #include "boundingSphere.h"
 
-IntersectData BoundingSphere::intersectBoundingSphere(const BoundingSphere& other) const
+IntersectData BoundingSphere::sphereIntersectBoundingSphere(const BoundingSphere& other) const
 {
   float radiusDistance = m_radius + other.getRadius();
   ngl::Vec3 direction = (other.getCentre() - m_centre);
@@ -13,7 +13,7 @@ IntersectData BoundingSphere::intersectBoundingSphere(const BoundingSphere& othe
   return IntersectData(distance < 0, direction * distance);
 }
 
-IntersectData BoundingSphere::intersectAABB(const AABB& other) const
+IntersectData BoundingSphere::sphereIntersectAABB(const AABB& other) const
 {
   //http://stackoverflow.com/questions/4578967/cube-sphere-intersection-test
   float r2 = m_radius * m_radius;

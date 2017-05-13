@@ -21,11 +21,12 @@ PhysicsEngine* PhysicsEngine::instance()
 PhysicsEngine::~PhysicsEngine(){}
 
 
-void PhysicsEngine::addObject(Collider* _collider, const ngl::Vec3& _velocity, ngl::Vec3 _colour, float _mass)
+void PhysicsEngine::addObject(const RigidBody& object)//Collider* _collider, const ngl::Vec3& _velocity, ngl::Vec3 _colour, float _mass, float _frictionCoeff)
 {
-  RigidBody rigidObject(_collider, _velocity, _colour, _mass);
+ // RigidBody rigidObject(_collider, _velocity, _colour, _mass, _frictionCoeff);
   //   new BoundingSphere(ngl::Vec3(5.0,10.0,1.0), 1.0),ngl::Vec3(5.0,10.0,1.0),ngl::Vec3(1.,1.0,1.0),4.f);
-  m_rigidObjects.push_back(rigidObject);
+  m_rigidObjects.push_back(object);
+
 
 }
 
@@ -37,7 +38,9 @@ void PhysicsEngine::addObject(Collider* _collider, const ngl::Vec3& _velocity, n
 
 }*/
 
-ngl::Vec3 PhysicsEngine::applyForces()
+
+
+ngl::Vec3 PhysicsEngine::applyWorldForces()
 {
 
   return m_gravity + m_wind;
@@ -47,6 +50,8 @@ void PhysicsEngine::addWind(ngl::Vec3 _amount)
 {
   m_wind += _amount;
 }
+
+
 
 /*void PhysicsEngine::simulate(float delta)
 {
@@ -69,33 +74,39 @@ void PhysicsEngine::handleCollisions()
       ///@brief Gets whether objects intersect and the direction of intersection between BoundingSphere-BoundingSphere,
       /// BoundingSphere-AABB, AABB-AABB.
       IntersectData intersectData = m_rigidObjects[i].transformCollider().intersect(m_rigidObjects[j].transformCollider());
-      //  IntersectData groundSphereData = m_rigidObjects[i].getCollider().intersect();
-      //   std::cout<<intersectData.GetDoesIntersect()<< "Intersect?\n";
-      //   std::cout<<m_rigidObjects[i].getCollider().getSize()<<"Size\n";
 
       ///@brief Collision response based on intersection of two dynamic rigid bodies
       if(intersectData.GetDoesIntersect())
       {
         ngl::Vec3 direction = intersectData.getDirection();
         direction.normalize();
+        float mass1 = 1 / m_rigidObjects[i].getMass();
+        float mass2 = 1 / m_rigidObjects[j].getMass();
+        float totalMass = mass1 + mass2;
         m_rigidObjects[i].setVelocity(ngl::Vec3(m_rigidObjects[i].getVelocity().reflect(direction)));
         m_rigidObjects[j].setVelocity(ngl::Vec3(m_rigidObjects[j].getVelocity().reflect(direction)));
       }
     }
-    //  std::cout<<m_rigidObjects[i].getPosition().m_y<<"position\n";
-
   }
 }
 
-void PhysicsEngine::checkGroundCollision()
+void PhysicsEngine::checkGroundWallCollision()
 {
   ///@brief Collision response based on objects intersecting the ground plane.
   for(auto& i : m_rigidObjects)
   {
-    if((i.getPosition().m_y - i.transformCollider().getSize().m_y) < m_groundPlane_y)
+    if((i.getPosition().m_y - i.transformCollider().getSize().m_y) < m_groundPlane_y || (i.getPosition().m_y - i.transformCollider().getSize().m_y) > 100)
     {
       ngl::Vec3 normal = ngl::Vec3(0.0,1.0,0.0);
       i.setVelocity(ngl::Vec3(i.getVelocity().reflect(normal)));//*0.991));
+    }
+    if((i.getPosition().m_x + i.transformCollider().getSize().m_x) > 100 || (i.getPosition().m_x - i.transformCollider().getSize().m_x) < -100)
+    {
+      i.setVelocity(ngl::Vec3(i.getVelocity().reflect(ngl::Vec3(1.0,0.0,0.0))));
+    }
+    if((i.getPosition().m_z + i.transformCollider().getSize().m_z) > 100 || (i.getPosition().m_z - i.transformCollider().getSize().m_z) < -100)
+    {
+      i.setVelocity(ngl::Vec3(i.getVelocity().reflect(ngl::Vec3(0.0,0.0,1.0))));
     }
   }
 }
@@ -106,10 +117,10 @@ void PhysicsEngine::updatePhysics(float _time)
   // std::cout<<"updating\n";
   for(auto& i : m_rigidObjects)
   {
-    i.integrate(_time, applyForces());
+    i.integrate(_time, applyWorldForces());
   }
   handleCollisions();
-  checkGroundCollision();
+  checkGroundWallCollision();
 }
 
 void PhysicsEngine::drawPhysics(const ngl::Mat4 &_globalTx, ngl::Camera *_cam, const std::string _shaderName, ngl::Vec3 _colour)

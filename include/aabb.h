@@ -36,17 +36,22 @@ private:
 #define AABB_H
 
 #include "intersectdata.h"
+#include "boundingSphere.h"
 #include <glm/glm.hpp>
 #include <ngl/NGLInit.h>
 #include "collider.h"
+
+class BoundingSphere;
 
 class AABB : public Collider
 {
 public:
     //AABB(const ngl::Vec3& minPoint, const ngl::Vec3& maxPoint): m_minPoint(minPoint), m_maxPoint(maxPoint){}
     AABB(ngl::Vec3 _position, const float& _width, const float& _height, const float& _depth);
+    ~AABB(){}
 
-    IntersectData intersectAABB(const AABB& other) const;
+    IntersectData AABBintersectAABB(const AABB& other) const;
+    IntersectData AABBintersectBoundingSphere(const BoundingSphere& other) const;
     const ngl::Vec3& getMinPoint() const {return m_minPoint;}
     const ngl::Vec3& getMaxPoint() const {return m_maxPoint;}
 

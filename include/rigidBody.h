@@ -15,13 +15,14 @@
 class RigidBody
 {
 public:
-    RigidBody(Collider* collider, const ngl::Vec3& velocity, const ngl::Vec3 &colour, float mass) :
+    RigidBody(Collider* collider, const ngl::Vec3& velocity, const ngl::Vec3 &colour, float mass, float frictionCoeff) :
                                                             m_position(collider->getCentre()),
                                                             m_oldPosition(collider->getCentre()),
                                                             m_velocity(velocity),
                                                             m_colour(colour),
                                                             m_acceleration(ngl::Vec3(0.0,0.0,0.0)),
                                                             m_mass(mass),
+                                                            m_frictionCoeff(frictionCoeff),
                                                             m_collider(collider){}
     RigidBody(const RigidBody& other)=default;
  //   RigidBody operator=(RigidBody other);
@@ -32,6 +33,7 @@ public:
    // virtual void updateRigidBody(ngl::Transformation &_transform,const ngl::Mat4 &_globalTx, ngl::Camera *_cam, float _delta ) const;
     /// @brief Method to draw rigid body
     void drawRigidBody(const ngl::Mat4 &_globalTx, ngl::Camera *_cam, const std::string _shaderName, ngl::Vec3 _colour) const;
+
                               //ngl::Transformation &_transform,
     const ngl::Vec3& getPosition() const {return m_position;}
     const ngl::Vec3& getVelocity() const {return m_velocity;}
@@ -46,6 +48,8 @@ public:
     void setColour(ngl::Vec3 newColour) {m_colour = newColour;}
 
 
+
+
 private:
     ngl::Vec3 m_position;
     ngl::Vec3 m_oldPosition;
@@ -55,11 +59,21 @@ private:
     ngl::Vec3 m_acceleration;
     ngl::Vec3 m_oldAcceleration;
     ngl::Vec3 m_avg_acceleration;
+    ngl::Vec3 m_friction;
+    ngl::Vec3 m_drag;
+
 
     float m_mass;
-    bool m_isDynamic;
+    float m_frictionCoeff;
+   // bool m_isDynamic;
 
     Collider* m_collider;
+
+    ngl::Vec3 calculateFriction();
+    ngl::Vec3 calculateDrag();
+    ngl::Vec3 applyObjectForces();
+
+
 
 };
 
