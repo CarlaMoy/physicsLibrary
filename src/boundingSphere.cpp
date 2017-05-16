@@ -18,6 +18,8 @@ IntersectData BoundingSphere::sphereIntersectAABB(const AABB& other) const
   //http://stackoverflow.com/questions/4578967/cube-sphere-intersection-test
   float r2 = m_radius * m_radius;
   float dmin = 0;
+
+
 /*  for(int i=0; i<3; ++i)
   {
     if(m_centre[i] < other.getMinPoint()[i])
@@ -25,18 +27,21 @@ IntersectData BoundingSphere::sphereIntersectAABB(const AABB& other) const
     else if(m_centre[i] > other.getMaxPoint()[i])
       dmin += sqrt(m_centre[i] - other.getMaxPoint()[i]);
   }*/
-  if(m_centre.m_x < other.getMinPoint().m_x)
-    dmin += sqrt(m_centre.m_x - other.getMinPoint().m_x);
-  else if(m_centre.m_x > other.getMaxPoint().m_x)
-    dmin += sqrt(m_centre.m_x - other.getMaxPoint().m_x);
-  if(m_centre.m_y < other.getMinPoint().m_y)
-    dmin += sqrt(m_centre.m_y - other.getMinPoint().m_y);
-  else if(m_centre.m_y > other.getMaxPoint().m_y)
-    dmin += sqrt(m_centre.m_y - other.getMaxPoint().m_y);
-  if(m_centre.m_z < other.getMinPoint().m_z)
-    dmin += sqrt(m_centre.m_z - other.getMinPoint().m_z);
-  else if(m_centre.m_z > other.getMaxPoint().m_z)
-    dmin += sqrt(m_centre.m_z - other.getMaxPoint().m_z);
+
+  if(m_centre.m_x + m_radius < other.getMinPoint().m_x)
+    dmin += sqrt(m_centre.m_x + m_radius - other.getMinPoint().m_x);
+  else if(m_centre.m_x - m_radius > other.getMaxPoint().m_x)
+    dmin += sqrt(m_centre.m_x - m_radius - other.getMaxPoint().m_x);
+
+  if(m_centre.m_y + m_radius < other.getMinPoint().m_y)
+    dmin += sqrt(m_centre.m_y + m_radius - other.getMinPoint().m_y);
+  else if(m_centre.m_y - m_radius > other.getMaxPoint().m_y)
+    dmin += sqrt(m_centre.m_y - m_radius - other.getMaxPoint().m_y);
+
+  if(m_centre.m_z + m_radius < other.getMinPoint().m_z)
+    dmin += sqrt(m_centre.m_z + m_radius - other.getMinPoint().m_z);
+  else if(m_centre.m_z - m_radius > other.getMaxPoint().m_z)
+    dmin += sqrt(m_centre.m_z - m_radius - other.getMaxPoint().m_z);
 
   //https://learnopengl.com/#!In-Practice/2D-Game/Collisions/Collision-resolution
  /* glm::vec2 compass[] = {

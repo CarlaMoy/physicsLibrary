@@ -29,42 +29,62 @@ RigidBody::~RigidBody(){}
 
 void RigidBody::integrate(float delta, ngl::Vec3 force)
 {
-  force += applyObjectForces();
+  if(m_mass <= 1.0)
+  {
+    m_mass += 1.0;
+  }
+  // force += applyObjectForces();
   m_oldAcceleration = m_acceleration;
   m_position += m_velocity * delta + (0.5 * m_oldAcceleration * delta * delta);
- // m_velocity += ngl::Vec3(0.0,-9.8,0.0) * delta;
-  m_acceleration = force * delta / 0.2;//m_mass;
+  // m_velocity += ngl::Vec3(0.0,-9.8,0.0) * delta;
+  m_acceleration = force * delta / m_mass;
   m_avg_acceleration = (m_oldAcceleration + m_acceleration) / 2;
   m_velocity += m_avg_acceleration * delta;
-  if(m_acceleration.m_y < 0.4 && m_acceleration.m_y > -0.4)
-    m_velocity = 0.0;
-  std::cout<<m_acceleration<<" acceleration\n";
- // std::cout<<m_position<<" position\n";
+  //  if(m_velocity.m_y < 0.4 && m_velocity.m_y > -0.4)
+  //    m_velocity = 0.0;
+  // std::cout<<m_acceleration<<" acceleration\n";
+  std::cout<<m_position<<"position...........\n";
+
+  //  if(m_velocity.m_y < 0.01 && m_position.m_y < 0.1)
+  //  {
+  //    m_velocity = (ngl::Vec3::zero());
+
+  //  }
 }
 
 ngl::Vec3 RigidBody::calculateFriction()
 {
   ngl::Vec3 friction = -m_velocity;
   friction.normalize();
-  friction *= m_frictionCoeff;
+  friction *= m_restitution;
   return friction;
 }
 
-ngl::Vec3 RigidBody::calculateDrag()
-{
-  float speed = m_velocity.length();
-  float dragMagnitude = speed * speed * m_frictionCoeff; //drag coefficient and friction coefficient are the same value for now
-  ngl::Vec3 drag = -m_velocity;
-  drag.normalize();
-  drag *= dragMagnitude;
-  return drag*0.1;
+//ngl::Vec3 RigidBody::calculateDrag()
+//{
+//  float speed = m_velocity.length();
+//  float dragMagnitude = speed * speed * m_frictionCoeff; //drag coefficient and friction coefficient are the same value for now
+//  ngl::Vec3 drag = -m_velocity;
+//  drag.normalize();
+//  drag *= dragMagnitude;
+//  return drag;
 
-}
+//}
 ngl::Vec3 RigidBody::applyObjectForces()
 {
-  return calculateFriction() + calculateDrag();
+  return calculateFriction(); // calculateDrag();
 }
 
+ngl::Vec3 RigidBody::attractForce(const RigidBody &_object)
+{
+  ngl::Vec3 force = m_position - _object.getPosition();
+  float distance = force.length();
+  force.normalize();
+
+  float strength = (1 * m_mass * _object.getMass()) / (distance * distance);
+  force *= strength;
+  return force;
+}
 
 const Collider& RigidBody::transformCollider()
 {
@@ -83,10 +103,8 @@ void RigidBody::drawRigidBody(const ngl::Mat4 &_globalTx, ngl::Camera *_cam, con
   shader->use(_shaderName);
   transform.reset();
   {
-   // auto size=m_collider->getSize();
-   // size/=2.0;
     transform.setPosition( m_position.m_x,m_position.m_y,m_position.m_z);
-    transform.setScale(m_collider->getSize());
+    transform.setScale(m_collider->getSize()); //*2 to match rendered objects to physics objects
 
     ngl::Mat4 MV;
     ngl::Mat4 MVP;
@@ -104,14 +122,10 @@ void RigidBody::drawRigidBody(const ngl::Mat4 &_globalTx, ngl::Camera *_cam, con
 
     switch(m_collider->getType())
     {
-    case m_collider->TYPE_SPHERE : prim->draw("sphere"); break;
-    case m_collider->TYPE_AABB : prim->draw("cube"); break;
+      case m_collider->TYPE_SPHERE : prim->draw("sphere"); break;
+      case m_collider->TYPE_AABB : prim->draw("cube"); break;
     }
 
-//    if(m_collider->getType() == m_collider->TYPE_SPHERE)
-//      prim->draw("sphere");
-//    else if(m_collider->getType() == m_collider->TYPE_AABB)
-//      prim->draw("cube");
   }
 }
 

@@ -17,6 +17,7 @@
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QSpacerItem>
@@ -30,12 +31,14 @@ class Ui_MainWindow
 public:
     QWidget *centralwidget;
     QGridLayout *m_mainWindowGridLayout;
+    QSpacerItem *horizontalSpacer;
     QGroupBox *groupBox;
     QGridLayout *gridLayout_2;
-    QDoubleSpinBox *m_xPos;
-    QDoubleSpinBox *m_yPos;
     QDoubleSpinBox *m_zPos;
-    QSpacerItem *horizontalSpacer;
+    QDoubleSpinBox *m_yPos;
+    QLabel *label;
+    QDoubleSpinBox *m_xPos;
+    QDoubleSpinBox *doubleSpinBox;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -48,31 +51,45 @@ public:
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
         m_mainWindowGridLayout = new QGridLayout(centralwidget);
         m_mainWindowGridLayout->setObjectName(QStringLiteral("m_mainWindowGridLayout"));
+        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        m_mainWindowGridLayout->addItem(horizontalSpacer, 0, 0, 1, 1);
+
         groupBox = new QGroupBox(centralwidget);
         groupBox->setObjectName(QStringLiteral("groupBox"));
         gridLayout_2 = new QGridLayout(groupBox);
         gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
-        m_xPos = new QDoubleSpinBox(groupBox);
-        m_xPos->setObjectName(QStringLiteral("m_xPos"));
+        m_zPos = new QDoubleSpinBox(groupBox);
+        m_zPos->setObjectName(QStringLiteral("m_zPos"));
 
-        gridLayout_2->addWidget(m_xPos, 0, 0, 1, 1);
+        gridLayout_2->addWidget(m_zPos, 2, 1, 1, 1);
 
         m_yPos = new QDoubleSpinBox(groupBox);
         m_yPos->setObjectName(QStringLiteral("m_yPos"));
 
-        gridLayout_2->addWidget(m_yPos, 0, 1, 1, 1);
+        gridLayout_2->addWidget(m_yPos, 2, 0, 1, 1);
 
-        m_zPos = new QDoubleSpinBox(groupBox);
-        m_zPos->setObjectName(QStringLiteral("m_zPos"));
+        label = new QLabel(groupBox);
+        label->setObjectName(QStringLiteral("label"));
 
-        gridLayout_2->addWidget(m_zPos, 0, 2, 1, 1);
+        gridLayout_2->addWidget(label, 0, 2, 1, 1);
+
+        m_xPos = new QDoubleSpinBox(groupBox);
+        m_xPos->setObjectName(QStringLiteral("m_xPos"));
+        m_xPos->setMinimum(-100);
+        m_xPos->setMaximum(100);
+        m_xPos->setSingleStep(0.2);
+        m_xPos->setValue(-9.8);
+
+        gridLayout_2->addWidget(m_xPos, 0, 1, 1, 1);
+
+        doubleSpinBox = new QDoubleSpinBox(groupBox);
+        doubleSpinBox->setObjectName(QStringLiteral("doubleSpinBox"));
+
+        gridLayout_2->addWidget(doubleSpinBox, 2, 2, 1, 1);
 
 
         m_mainWindowGridLayout->addWidget(groupBox, 0, 1, 1, 1);
-
-        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        m_mainWindowGridLayout->addItem(horizontalSpacer, 0, 0, 1, 1);
 
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
@@ -92,6 +109,7 @@ public:
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0));
         groupBox->setTitle(QApplication::translate("MainWindow", "GroupBox", 0));
+        label->setText(QApplication::translate("MainWindow", "Gravity", 0));
     } // retranslateUi
 
 };

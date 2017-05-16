@@ -1,6 +1,11 @@
 #ifndef WINDOWPARAMS_H_
 #define WINDOWPARAMS_H_
 
+///@file aabb.h
+///@brief AABB Class, child class of Collider for generating and checking AABB based collision.
+///@author Carla Moy
+///@class AABB
+
 struct WinParams
 {
   //----------------------------------------------------------------------------------------------------------------------
@@ -53,6 +58,6 @@ constexpr float INCREMENT=0.01f;
 //----------------------------------------------------------------------------------------------------------------------
 /// @brief the increment for the wheel zoom
 //----------------------------------------------------------------------------------------------------------------------
-constexpr float ZOOM=0.1f;
+constexpr float ZOOM=10.f;
 
 #endif

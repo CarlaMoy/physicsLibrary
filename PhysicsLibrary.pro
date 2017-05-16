@@ -14,7 +14,7 @@ TARGET=PhysicsLibrary
 
 OBJECTS_DIR=obj
 # core Qt Libs to use add more here if needed.
-QT+=gui opengl core widgets
+QT+=gui opengl core
 
 # as I want to support 4.8 and 5 this will set a flag for some of the mac stuff
 # mainly in the types.h file for the setMacVisual which is native in Qt5
@@ -38,12 +38,10 @@ SOURCES+=$$PWD/src/main.cpp \
          $$PWD/src/collider.cpp \
          $$PWD/src/NGLScene.cpp \
          $$PWD/src/NGLSceneMouseControls.cpp \
-         $$PWD/src/rigidBodyFactory.cpp \
-         $$PWD/src/sphere.cpp \
-         $$PWD/src/StaticPlane.cpp \
+         $$PWD/src/MainWindow.cpp \
          $$PWD/src/AbstractOctree.cpp \
-         $$PWD/src/RigidBodyOctree.cpp
-    src/MainWindow.cpp
+         $$PWD/src/RigidBodyOctree.cpp \
+         $$PWD/src/spatialPartition.cpp
 
 
 
@@ -57,13 +55,11 @@ HEADERS+= $$PWD/include/NGLScene.h \
           $$PWD/include/plane.h \
           $$PWD/include/physicsengine.h \
           $$PWD/include/collider.h \
-          $$PWD/include/rigidBodyFactory.h \
-          $$PWD/include/rigidBodyTypeInfo.h \
-          $$PWD/include/sphere.h \
-          $$PWD/include/StaticPlane.h \
+          $$PWD/include/MainWindow.h \
           $$PWD/include/AbstractOctree.h \
-          $$PWD/include/RigidBodyOctree.h
-    include/MainWindow.h
+          $$PWD/include/RigidBodyOctree.h \
+          $$PWD/include/spatialPartition.h
+
 
 
 # and add the include dir into the search path for Qt and make

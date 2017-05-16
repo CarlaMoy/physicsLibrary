@@ -37,8 +37,8 @@ IntersectData Collider::intersect(const Collider& other) const
   }*/
 
 
-  std::cerr << "Error: Collisions not implemented between specified colliders.\n";
-  exit(1);
+//  std::cerr << "Error: Collisions not implemented between specified colliders.\n";
+//  exit(1);
 
   //Control should not reach this point
   return IntersectData(false, ngl::Vec3::zero());

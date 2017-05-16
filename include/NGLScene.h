@@ -6,25 +6,24 @@
 #include <ngl/Transformation.h>
 #include <ngl/Text.h>
 #include "WindowParams.h"
+
 #include <QOpenGLWidget>
+#include <QEvent>
+#include <QGLWidget>
+
 #include <memory>
 #include "physicsengine.h"
 
 //----------------------------------------------------------------------------------------------------------------------
 /// @file NGLScene.h
-/// @brief this class inherits from the Qt OpenGLWindow and allows us to use NGL to draw OpenGL
-/// @author Jonathan Macey
-/// @version 1.0
-/// @date 10/9/13
-/// Revision History :
-/// This is an initial version used for the new NGL6 / Qt 5 demos
+/// @brief this class inherits from the Qt OpenGLWidget. Class is modified from Jon Macey's NGL Demo code
+/// @author Carla Moy
 /// @class NGLScene
-/// @brief our main glwindow widget for NGL applications all drawing elements are
-/// put in this file
 //----------------------------------------------------------------------------------------------------------------------
 
 class NGLScene : public QOpenGLWidget
 {
+  Q_OBJECT
   public:
     //----------------------------------------------------------------------------------------------------------------------
     /// @brief ctor for our NGL drawing class
@@ -48,6 +47,12 @@ class NGLScene : public QOpenGLWidget
     /// @brief this is called everytime we resize the window
     //----------------------------------------------------------------------------------------------------------------------
     void resizeGL(int _w, int _h);
+
+   // float getGravity() const { return m_gravity; }
+public slots:
+
+    void changeGravity(double _value);// { m_gravity = _value; }
+    void resetPhysicsWorld();
 
 
 private:
@@ -78,9 +83,9 @@ private:
     //----------------------------------------------------------------------------------------------------------------------
     /// @brief timer id for the animation timer
     //----------------------------------------------------------------------------------------------------------------------
-    int m_lightTimer;
+   // int m_lightTimer;
     //----------------------------------------------------------------------------------------------------------------------
-    /// @brief flag to indicate if were animating the light
+    /// @brief flag to indicate if updating physics
     //----------------------------------------------------------------------------------------------------------------------
     bool m_animate;
     //----------------------------------------------------------------------------------------------------------------------
@@ -88,7 +93,7 @@ private:
     //----------------------------------------------------------------------------------------------------------------------
     ngl::Real m_lightAngle;
     //----------------------------------------------------------------------------------------------------------------------
-    /// @brief method to load transform matrices to the shader
+    /// @brief timer ID for physics animation timer
     //----------------------------------------------------------------------------------------------------------------------
     int m_physicsTimer;
     //----------------------------------------------------------------------------------------------------------------------
@@ -142,6 +147,8 @@ private:
     /// @param[in] _shader the name of the shader to use when drawing
     //----------------------------------------------------------------------------------------------------------------------
     void drawScene(const std::string &_shader);
+
+  //  float m_gravity;
 
     bool m_isWireframe = false;
 

@@ -6,8 +6,12 @@
 #include <vector>
 #include <ngl/SimpleVAO.h>
 #include <memory>
+#include "RigidBodyOctree.h"
 
-
+///@file aabb.h
+///@brief AABB Class, child class of Collider for generating and checking AABB based collision.
+///@author Carla Moy
+///@class AABB
 
 class PhysicsEngine
 {
@@ -24,9 +28,11 @@ public:
     void checkGroundWallCollision();
     void updatePhysics(float _time);
     void drawPhysics(const ngl::Mat4 &_globalTx, ngl::Camera *_cam, const std::string _shaderName, ngl::Vec3 _colour);
-    void setGravity();
+    void setGravity(float _value){m_gravity.m_y = _value;}
     ngl::Vec3 applyWorldForces();
     void addWind(ngl::Vec3 _amount);
+    void resetForces();
+    void resetWorld() {m_rigidObjects.clear();}
 
 
 
@@ -50,10 +56,11 @@ public:
 private:
 
     std::vector<RigidBody> m_rigidObjects;
+    std::vector <RigidBody *> m_rigidObjs;
     //std::unique_ptr<ngl::AbstractVAO> m_vao;
     bool m_gravOn;
     float m_groundPlane_y = 0.0f;
-    ngl::Vec3 m_gravity = ngl::Vec3(0.0,-9.8,0.0);
+    ngl::Vec3 m_gravity;// = ngl::Vec3(0.0,-9.8,0.0);
     ngl::Vec3 m_wind;
     ngl::Vec3 m_friction;
 
@@ -61,9 +68,12 @@ private:
 
 
     void resetRigidBody(RigidBody &io_r);
-    void loadRigidBodyVAO();
+  //  void loadRigidBodyVAO();
 
     static PhysicsEngine *s_instance;
+
+    /// @brief octree for collision detection
+   // std::unique_ptr<RigidBodyOctree>  m_collisionTree;
 
     PhysicsEngine(){}
 };

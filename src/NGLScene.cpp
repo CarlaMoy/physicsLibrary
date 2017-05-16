@@ -1,8 +1,11 @@
+
+#include "NGLScene.h"
 #include <QMouseEvent>
 #include <QGuiApplication>
 #include <iostream>
 
-#include "NGLScene.h"
+
+
 #include <ngl/Camera.h>
 #include <ngl/Light.h>
 #include <ngl/Material.h>
@@ -93,7 +96,7 @@ void NGLScene::initializeGL()
   // Now we will create a basic Camera from the graphics library
   // This is a static camera so it only needs to be set once
   // First create Values for the camera position
-  ngl::Vec3 from(0.0f,2.0f,30.0f);
+  ngl::Vec3 from(0.0f,0.01f,50.0f);
   ngl::Vec3 to(0.0f,0.0f,0.0f);
   ngl::Vec3 up(0,1,0);
   // now load to our new camera
@@ -118,6 +121,7 @@ void NGLScene::initializeGL()
 
   ngl::VAOPrimitives *prim=ngl::VAOPrimitives::instance();
   prim->createSphere("sphere",1.0f,50);
+ // prim->create
 
   //  prim->createCylinder("cylinder",0.5f,1.4f,40,40);
 
@@ -133,12 +137,18 @@ void NGLScene::initializeGL()
   m_physicsTimer =startTimer(1);
   // m_physicsTimer = startTimer(1);
 
+
   PhysicsEngine *world = PhysicsEngine::instance();
 
+  changeGravity(0);
+
                                                 //position            radius            velocity            colour            mass
-//  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(5.0,10.0,1.0), 1.0), ngl::Vec3(-0.3,0.0,0.0), ngl::Vec3(1.0,0.1,0.3), 1.0));
- // world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(5.0,4.0,1.0), 1.0), ngl::Vec3(0.0,0.0,0.0), ngl::Vec3(0.4,0.1,0.7), 2.0, 2.0));
- // world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(0.0,5.0,3.0), 0.5), ngl::Vec3(0.0,0.0,0.0), ngl::Vec3(0.1,0.1,0.7), 5.0, 1.5));
+  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(-15.0,10.0,1.0), 10.0), ngl::Vec3(1.0,0.0,0.0), ngl::Vec3(1.0,0.1,0.3), 0.5, 0.01));
+ // world->addObject(RigidBody(new AABB(ngl::Vec3(-50.0,9.0,1.0), 1.0, 1.0, 1.0), ngl::Vec3(0.0,0.0,0.0), ngl::Vec3(0.9,0.1,0.7), 0.5, 0.007));
+  world->addObject(RigidBody(new AABB(ngl::Vec3(40.0,10.0,1.0), 5.0, 6.0, 2.0), ngl::Vec3(-1.0,0.0,0.0), ngl::Vec3(0.5,0.1,0.7), 2.0, 0.007));
+  world->addObject(RigidBody(new AABB(ngl::Vec3(20.0,10.0,1.0), 5.0, 6.0, 2.0), ngl::Vec3(-1.0,0.0,0.0), ngl::Vec3(0.9,0.1,0.7), 2.0, 0.007));
+
+ // world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(15.0,10.0,1.0), 1.0), ngl::Vec3(-1.0,0.0,0.0), ngl::Vec3(0.1,0.1,0.7), 2.0, 0.2));
 //  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(6.0,3.0,4.0), 1.0), ngl::Vec3(2.0,0.0,0.0), ngl::Vec3(0.1,0.1,0.7), 1.0, 2.0));
  // world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(-2.0,7.0,5.0), 1.0), ngl::Vec3(1.0,1.0,0.0), ngl::Vec3(0.1,0.1,0.7), 2.0, 0.03));
 //  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(-2.0,7.0,10.0), 1.0), ngl::Vec3(1.0,0.0,1.0), ngl::Vec3(0.1,0.1,0.7), 2.0, 5.0));
@@ -153,17 +163,19 @@ void NGLScene::initializeGL()
 
  // std::cout<< "---------------------> "<<a.getMass() <<std::endl;
 
-  world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(5.0,10.0,1.0), 1.0),ngl::Vec3(-4.0,0.0,0.0), ngl::Vec3(1.0,0.1,0.3), 1.0, 2.0));
-  std::cout<< "---------------------> "<<world->getObject(0).getMass() <<std::endl;
+ // world->addObject(RigidBody(new AABB(ngl::Vec3(5.0,10.0,1.0), 1.0,1.0, 1.0),ngl::Vec3(0.0,0.0,0.0), ngl::Vec3(1.0,0.1,0.3), 3.0, 0.001));
+ // std::cout<< "---------------------> "<<world->getObject(0).getMass() <<std::endl;
 
-  int numSpheres = 50;
+ // int numSpheres = 3;
 
-  for(int i=0; i<numSpheres; ++i)
+
+
+/*  for(int i=0; i<numSpheres; ++i)
   {
     ngl::Random *rng=ngl::Random::instance();
     world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(rng->randomNumber(100),rng->randomPositiveNumber(50),rng->randomNumber(100)),
                                rng->randomPositiveNumber(5)),rng->getRandomVec3(), rng->getRandomVec3(), rng->randomPositiveNumber(1), 2.0));
-  }
+  }*/
 }
 
 
@@ -213,9 +225,9 @@ void NGLScene::drawScene(const std::string &_shader)
  // ngl::Random *rng=ngl::Random::instance();
 
   world->drawPhysics(m_mouseGlobalTX, &m_cam, _shader, world->getObject(0).getColour());
-  std::cout<<world->getObject(1).getColour()<<"colour\n";
-  std::cout<<world->getObject(0).getMass()<<"mass\n";
-  std::cout<<world->getObject(0).getVelocity()<<"velocity\n";
+ // std::cout<<world->getObject(1).getColour()<<"colour\n";
+ // std::cout<<world->getObject(0).getMass()<<"mass\n";
+ // std::cout<<world->getObject(0).getVelocity()<<"velocity\n";
 
 
   m_transform.reset();
@@ -346,9 +358,9 @@ void NGLScene::keyPressEvent(QKeyEvent *_event)
     // show windowed
   case Qt::Key_N : showNormal(); break;
   case Qt::Key_Space : m_animate^=true; break;
-  case Qt::Key_A :world->addObject(RigidBody(new AABB(ngl::Vec3(rng->randomNumber(100),rng->randomPositiveNumber(50),rng->randomNumber(100)), rng->randomPositiveNumber(5),rng->randomPositiveNumber(5),rng->randomPositiveNumber(5)),rng->getRandomVec3(), rng->getRandomVec3(), rng->randomPositiveNumber(1), 2.0)); break;
-  case Qt::Key_B :world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(rng->randomNumber(100),rng->randomPositiveNumber(50),rng->randomNumber(100)), rng->randomPositiveNumber(5)),rng->getRandomVec3(), rng->getRandomVec3(), rng->randomPositiveNumber(1), 2.0)); break;
-  case Qt::Key_G : world->setGravity();
+  case Qt::Key_A :world->addObject(RigidBody(new AABB(ngl::Vec3(rng->randomNumber(100),rng->randomPositiveNumber(50),rng->randomNumber(100)), rng->randomPositiveNumber(5),rng->randomPositiveNumber(5),rng->randomPositiveNumber(5)),rng->getRandomVec3(), rng->getRandomVec3(), rng->randomPositiveNumber(5), rng->randomPositiveNumber(1))); break;
+  case Qt::Key_B :world->addObject(RigidBody(new BoundingSphere(ngl::Vec3(rng->randomNumber(100),rng->randomPositiveNumber(50),rng->randomNumber(100)), rng->randomPositiveNumber(5)),rng->getRandomVec3(), rng->getRandomVec3(), rng->randomPositiveNumber(5), rng->randomPositiveNumber(1))); break;
+  case Qt::Key_G : world->setGravity(9);
 
 
   case Qt::Key_1 : world->addWind(ngl::Vec3(0.0,9.8,0.0)); break;
@@ -385,11 +397,24 @@ void NGLScene::timerEvent(QTimerEvent *_event )
   {
  //   updateLight();
 
-    world->updatePhysics(0.08);
+    world->updatePhysics(0.1);
    // world->handleCollisions();
   }
   // re-draw GL
   update();
+  //std::cout << m_gravity << "\n";
+}
+
+void NGLScene::changeGravity(double _value)
+{
+  PhysicsEngine *world = PhysicsEngine::instance();
+  world->resetForces();
+  world->setGravity(_value);
 }
 
 
+void NGLScene::resetPhysicsWorld()
+{
+  PhysicsEngine *world = PhysicsEngine::instance();
+  world->resetWorld();
+}

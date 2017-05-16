@@ -4,6 +4,11 @@
 #include <glm/glm.hpp>
 #include <ngl/NGLInit.h>
 
+///@file intersectdata.h
+///@brief Basic manifold geometry class to return intersection data required for collision response
+///@author Carla Moy
+///@class IntersectData
+
 class IntersectData
 {
 public:

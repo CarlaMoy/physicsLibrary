@@ -58,10 +58,11 @@ SOURCES       = src/main.cpp \
 		src/collider.cpp \
 		src/NGLScene.cpp \
 		src/NGLSceneMouseControls.cpp \
-		src/rigidBodyFactory.cpp \
-		src/sphere.cpp \
-		src/StaticPlane.cpp \
-		src/MainWindow.cpp moc/moc_MainWindow.cpp
+		src/MainWindow.cpp \
+		src/AbstractOctree.cpp \
+		src/RigidBodyOctree.cpp \
+		src/spatialPartition.cpp moc/moc_NGLScene.cpp \
+		moc/moc_MainWindow.cpp
 OBJECTS       = obj/main.o \
 		obj/rigidBody.o \
 		obj/boundingSphere.o \
@@ -72,10 +73,11 @@ OBJECTS       = obj/main.o \
 		obj/collider.o \
 		obj/NGLScene.o \
 		obj/NGLSceneMouseControls.o \
-		obj/rigidBodyFactory.o \
-		obj/sphere.o \
-		obj/StaticPlane.o \
 		obj/MainWindow.o \
+		obj/AbstractOctree.o \
+		obj/RigidBodyOctree.o \
+		obj/spatialPartition.o \
+		obj/moc_NGLScene.o \
 		obj/moc_MainWindow.o
 DIST          = .qmake.stash \
 		PhysicsLibrary.pro include/NGLScene.h \
@@ -87,11 +89,10 @@ DIST          = .qmake.stash \
 		include/plane.h \
 		include/physicsengine.h \
 		include/collider.h \
-		include/rigidBodyFactory.h \
-		include/rigidBodyTypeInfo.h \
-		include/sphere.h \
-		include/StaticPlane.h \
-		include/MainWindow.h src/main.cpp \
+		include/MainWindow.h \
+		include/AbstractOctree.h \
+		include/RigidBodyOctree.h \
+		include/spatialPartition.h src/main.cpp \
 		src/rigidBody.cpp \
 		src/boundingSphere.cpp \
 		src/intersectdata.cpp \
@@ -101,10 +102,10 @@ DIST          = .qmake.stash \
 		src/collider.cpp \
 		src/NGLScene.cpp \
 		src/NGLSceneMouseControls.cpp \
-		src/rigidBodyFactory.cpp \
-		src/sphere.cpp \
-		src/StaticPlane.cpp \
-		src/MainWindow.cpp
+		src/MainWindow.cpp \
+		src/AbstractOctree.cpp \
+		src/RigidBodyOctree.cpp \
+		src/spatialPartition.cpp
 QMAKE_TARGET  = PhysicsLibrary
 DESTDIR       = 
 TARGET        = PhysicsLibrary
@@ -451,8 +452,8 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents include/NGLScene.h include/WindowParams.h include/rigidBody.h include/boundingSphere.h include/intersectdata.h include/aabb.h include/plane.h include/physicsengine.h include/collider.h include/rigidBodyFactory.h include/rigidBodyTypeInfo.h include/sphere.h include/StaticPlane.h include/MainWindow.h $(DISTDIR)/
-	$(COPY_FILE) --parents src/main.cpp src/rigidBody.cpp src/boundingSphere.cpp src/intersectdata.cpp src/aabb.cpp src/plane.cpp src/physicsengine.cpp src/collider.cpp src/NGLScene.cpp src/NGLSceneMouseControls.cpp src/rigidBodyFactory.cpp src/sphere.cpp src/StaticPlane.cpp src/MainWindow.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents include/NGLScene.h include/WindowParams.h include/rigidBody.h include/boundingSphere.h include/intersectdata.h include/aabb.h include/plane.h include/physicsengine.h include/collider.h include/MainWindow.h include/AbstractOctree.h include/RigidBodyOctree.h include/spatialPartition.h $(DISTDIR)/
+	$(COPY_FILE) --parents src/main.cpp src/rigidBody.cpp src/boundingSphere.cpp src/intersectdata.cpp src/aabb.cpp src/plane.cpp src/physicsengine.cpp src/collider.cpp src/NGLScene.cpp src/NGLSceneMouseControls.cpp src/MainWindow.cpp src/AbstractOctree.cpp src/RigidBodyOctree.cpp src/spatialPartition.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents UI/MainWindow.ui $(DISTDIR)/
 
 
@@ -479,9 +480,165 @@ benchmark: first
 
 compiler_rcc_make_all:
 compiler_rcc_clean:
-compiler_moc_header_make_all: moc/moc_MainWindow.cpp
+compiler_moc_header_make_all: moc/moc_NGLScene.cpp moc/moc_MainWindow.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc/moc_MainWindow.cpp
+	-$(DEL_FILE) moc/moc_NGLScene.cpp moc/moc_MainWindow.cpp
+moc/moc_NGLScene.cpp: /home/i7466612/NGL/include/ngl/Camera.h \
+		/home/i7466612/NGL/include/ngl/Types.h \
+		/home/i7466612/NGL/include/ngl/glew.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtOpenGL/QGLContext \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtOpenGL/qgl.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qopengl.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qglobal.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qconfig.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qfeatures.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qsystemdetection.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qprocessordetection.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qcompilerdetection.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qtypeinfo.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qtypetraits.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qisenum.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qsysinfo.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qlogging.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qflags.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qbasicatomic.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qgenericatomic.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_cxx11.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_msvc.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qglobalstatic.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qmutex.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qnumeric.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qversiontagging.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qt_windows.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qopengles2ext.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglext.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qwidget.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qwindowdefs.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectdefs.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qnamespace.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qwindowdefs_win.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qobject.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qstring.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qchar.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qbytearray.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qrefcount.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qarraydata.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qstringbuilder.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qlist.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qalgorithms.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qiterator.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qhashfunctions.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qpair.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qbytearraylist.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qstringlist.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qregexp.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qstringmatcher.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreevent.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qscopedpointer.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qmetatype.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qvarlengtharray.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qcontainerfwd.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qobject_impl.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qmargins.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpaintdevice.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qrect.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qsize.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qpoint.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpalette.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qcolor.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qrgb.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qrgba64.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qbrush.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qvector.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qmatrix.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpolygon.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qregion.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qdatastream.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qiodevice.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qline.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qtransform.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpainterpath.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qimage.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpixelformat.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpixmap.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qshareddata.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qhash.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qfont.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qfontmetrics.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qfontinfo.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qsizepolicy.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qcursor.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qkeysequence.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qevent.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qvariant.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qmap.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qdebug.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qtextstream.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qlocale.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qset.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qcontiguouscache.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qurl.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qurlquery.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qfile.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qfiledevice.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qvector2d.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qtouchdevice.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpaintengine.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpainter.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtOpenGL/qglcolormap.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtOpenGL/qtopenglglobal.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/QSurfaceFormat \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qsurfaceformat.h \
+		/home/i7466612/NGL/include/ngl/Vec4.h \
+		/home/i7466612/NGL/include/ngl/Vec2.h \
+		/home/i7466612/NGL/include/ngl/Vec3.h \
+		/home/i7466612/NGL/include/ngl/Mat4.h \
+		/home/i7466612/NGL/include/ngl/RibExport.h \
+		/home/i7466612/NGL/include/ngl/Plane.h \
+		/home/i7466612/NGL/include/ngl/AABB.h \
+		/home/i7466612/NGL/include/ngl/BBox.h \
+		/home/i7466612/NGL/include/ngl/AbstractVAO.h \
+		/home/i7466612/NGL/include/ngl/Colour.h \
+		/home/i7466612/NGL/include/ngl/Light.h \
+		/home/i7466612/NGL/include/ngl/Transformation.h \
+		/home/i7466612/NGL/include/ngl/NGLassert.h \
+		/home/i7466612/NGL/include/ngl/Text.h \
+		/home/i7466612/NGL/include/ngl/VAOFactory.h \
+		/home/i7466612/NGL/include/ngl/SimpleVAO.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/QFont \
+		include/WindowParams.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QOpenGLWidget \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qopenglwidget.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/QEvent \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtOpenGL/QGLWidget \
+		include/physicsengine.h \
+		include/rigidBody.h \
+		/home/i7466612/NGL/include/ngl/ShaderLib.h \
+		/home/i7466612/NGL/include/ngl/Shader.h \
+		/home/i7466612/NGL/include/ngl/ShaderProgram.h \
+		/home/i7466612/NGL/include/ngl/Util.h \
+		/home/i7466612/NGL/include/ngl/Singleton.h \
+		/home/i7466612/NGL/include/ngl/Mat3.h \
+		include/collider.h \
+		include/intersectdata.h \
+		/home/i7466612/NGL/include/ngl/NGLInit.h \
+		/home/i7466612/NGL/include/ngl/VAOPrimitives.h \
+		include/rigidBodyTypeInfo.h \
+		include/spatialPartition.h \
+		include/RigidBodyOctree.h \
+		include/AbstractOctree.h \
+		include/NGLScene.h \
+		/opt/Qt5.7.0/5.7/gcc_64/bin/moc
+	/opt/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/opt/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I/home/i7466612/physicsLibrary -I/home/i7466612/physicsLibrary/include -I/home/i7466612/NGL/include -I/opt/Qt5.7.0/5.7/gcc_64/include -I/opt/Qt5.7.0/5.7/gcc_64/include/QtOpenGL -I/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/opt/Qt5.7.0/5.7/gcc_64/include/QtGui -I/opt/Qt5.7.0/5.7/gcc_64/include/QtCore -I/usr/include/c++/4.8.5 -I/usr/include/c++/4.8.5/x86_64-redhat-linux -I/usr/include/c++/4.8.5/backward -I/usr/lib/gcc/x86_64-redhat-linux/4.8.5/include -I/usr/local/include -I/usr/include include/NGLScene.h -o moc/moc_NGLScene.cpp
+
 moc/moc_MainWindow.cpp: /opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmainwindow.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qwidget.h \
@@ -582,6 +739,8 @@ moc/moc_MainWindow.cpp: /opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qtouchdevice.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabwidget.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qicon.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmessagebox.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdialog.h \
 		include/NGLScene.h \
 		/home/i7466612/NGL/include/ngl/Camera.h \
 		/home/i7466612/NGL/include/ngl/Types.h \
@@ -621,6 +780,8 @@ moc/moc_MainWindow.cpp: /opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QOpenGLWidget \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qopenglwidget.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/QEvent \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtOpenGL/QGLWidget \
 		include/physicsengine.h \
 		include/rigidBody.h \
 		/home/i7466612/NGL/include/ngl/ShaderLib.h \
@@ -634,6 +795,9 @@ moc/moc_MainWindow.cpp: /opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
 		/home/i7466612/NGL/include/ngl/NGLInit.h \
 		/home/i7466612/NGL/include/ngl/VAOPrimitives.h \
 		include/rigidBodyTypeInfo.h \
+		include/spatialPartition.h \
+		include/RigidBodyOctree.h \
+		include/AbstractOctree.h \
 		include/MainWindow.h \
 		/opt/Qt5.7.0/5.7/gcc_64/bin/moc
 	/opt/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/opt/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I/home/i7466612/physicsLibrary -I/home/i7466612/physicsLibrary/include -I/home/i7466612/NGL/include -I/opt/Qt5.7.0/5.7/gcc_64/include -I/opt/Qt5.7.0/5.7/gcc_64/include/QtOpenGL -I/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/opt/Qt5.7.0/5.7/gcc_64/include/QtGui -I/opt/Qt5.7.0/5.7/gcc_64/include/QtCore -I/usr/include/c++/4.8.5 -I/usr/include/c++/4.8.5/x86_64-redhat-linux -I/usr/include/c++/4.8.5/backward -I/usr/lib/gcc/x86_64-redhat-linux/4.8.5/include -I/usr/local/include -I/usr/include include/MainWindow.h -o moc/moc_MainWindow.cpp
@@ -800,6 +964,8 @@ obj/main.o: src/main.cpp /opt/Qt5.7.0/5.7/gcc_64/include/QtGui/QGuiApplication \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QOpenGLWidget \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qopenglwidget.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/QEvent \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtOpenGL/QGLWidget \
 		include/physicsengine.h \
 		include/rigidBody.h \
 		/home/i7466612/NGL/include/ngl/ShaderLib.h \
@@ -813,6 +979,9 @@ obj/main.o: src/main.cpp /opt/Qt5.7.0/5.7/gcc_64/include/QtGui/QGuiApplication \
 		/home/i7466612/NGL/include/ngl/NGLInit.h \
 		/home/i7466612/NGL/include/ngl/VAOPrimitives.h \
 		include/rigidBodyTypeInfo.h \
+		include/spatialPartition.h \
+		include/RigidBodyOctree.h \
+		include/AbstractOctree.h \
 		include/boundingSphere.h \
 		include/aabb.h \
 		include/plane.h \
@@ -825,7 +994,6 @@ obj/main.o: src/main.cpp /opt/Qt5.7.0/5.7/gcc_64/include/QtGui/QGuiApplication \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/QWindow \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qwindow.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/QEvent \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/QMargins \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/QRect \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qsurface.h \
@@ -840,7 +1008,9 @@ obj/main.o: src/main.cpp /opt/Qt5.7.0/5.7/gcc_64/include/QtGui/QGuiApplication \
 		include/MainWindow.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmainwindow.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabwidget.h
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabwidget.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmessagebox.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdialog.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/main.o src/main.cpp
 
 obj/rigidBody.o: src/rigidBody.cpp include/rigidBody.h \
@@ -980,6 +1150,7 @@ obj/rigidBody.o: src/rigidBody.cpp include/rigidBody.h \
 		/home/i7466612/NGL/include/ngl/NGLInit.h \
 		/home/i7466612/NGL/include/ngl/VAOPrimitives.h \
 		include/rigidBodyTypeInfo.h \
+		include/spatialPartition.h \
 		include/boundingSphere.h \
 		include/aabb.h \
 		/home/i7466612/NGL/include/ngl/NGLStream.h
@@ -1230,6 +1401,7 @@ obj/aabb.o: src/aabb.cpp include/aabb.h \
 		/home/i7466612/NGL/include/ngl/VAOPrimitives.h \
 		/home/i7466612/NGL/include/ngl/Vec3.h \
 		/home/i7466612/NGL/include/ngl/AbstractVAO.h \
+		include/boundingSphere.h \
 		include/collider.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/aabb.o src/aabb.cpp
 
@@ -1374,7 +1546,10 @@ obj/physicsengine.o: src/physicsengine.cpp include/physicsengine.h \
 		/home/i7466612/NGL/include/ngl/NGLInit.h \
 		/home/i7466612/NGL/include/ngl/VAOPrimitives.h \
 		include/rigidBodyTypeInfo.h \
+		include/spatialPartition.h \
 		/home/i7466612/NGL/include/ngl/SimpleVAO.h \
+		include/RigidBodyOctree.h \
+		include/AbstractOctree.h \
 		include/boundingSphere.h \
 		include/aabb.h \
 		/home/i7466612/NGL/include/ngl/Random.h \
@@ -1505,9 +1680,13 @@ obj/collider.o: src/collider.cpp include/collider.h \
 		include/aabb.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/collider.o src/collider.cpp
 
-obj/NGLScene.o: src/NGLScene.cpp /opt/Qt5.7.0/5.7/gcc_64/include/QtGui/QMouseEvent \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qevent.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qwindowdefs.h \
+obj/NGLScene.o: src/NGLScene.cpp include/NGLScene.h \
+		/home/i7466612/NGL/include/ngl/Camera.h \
+		/home/i7466612/NGL/include/ngl/Types.h \
+		/home/i7466612/NGL/include/ngl/glew.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtOpenGL/QGLContext \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtOpenGL/qgl.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qopengl.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qglobal.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qconfig.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qfeatures.h \
@@ -1530,18 +1709,15 @@ obj/NGLScene.o: src/NGLScene.cpp /opt/Qt5.7.0/5.7/gcc_64/include/QtGui/QMouseEve
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qmutex.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qnumeric.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qversiontagging.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qt_windows.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qopengles2ext.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglext.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qwidget.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qwindowdefs.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectdefs.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qnamespace.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectdefs_impl.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qwindowdefs_win.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qregion.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qrect.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qmargins.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qsize.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qpoint.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qdatastream.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qscopedpointer.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qiodevice.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qobject.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qstring.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qchar.h \
@@ -1559,64 +1735,57 @@ obj/NGLScene.o: src/NGLScene.cpp /opt/Qt5.7.0/5.7/gcc_64/include/QtGui/QMouseEve
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qregexp.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qstringmatcher.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreevent.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qscopedpointer.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qmetatype.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qvarlengtharray.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qcontainerfwd.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qobject_impl.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qkeysequence.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qvariant.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qmap.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qdebug.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qhash.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qtextstream.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qlocale.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qshareddata.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qvector.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qset.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qcontiguouscache.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer_impl.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qurl.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qurlquery.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qfile.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qfiledevice.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qvector2d.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qtouchdevice.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/QGuiApplication \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qguiapplication.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreapplication.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qeventloop.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qinputmethod.h \
-		include/NGLScene.h \
-		/home/i7466612/NGL/include/ngl/Camera.h \
-		/home/i7466612/NGL/include/ngl/Types.h \
-		/home/i7466612/NGL/include/ngl/glew.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtOpenGL/QGLContext \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtOpenGL/qgl.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qopengl.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qt_windows.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qopengles2ext.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglext.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qwidget.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qmargins.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpaintdevice.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qrect.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qsize.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qpoint.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpalette.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qcolor.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qrgb.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qrgba64.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qbrush.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qvector.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qmatrix.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpolygon.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qregion.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qdatastream.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qiodevice.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qline.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qtransform.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpainterpath.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qimage.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpixelformat.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpixmap.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qshareddata.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qhash.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer_impl.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qfont.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qfontmetrics.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qfontinfo.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qsizepolicy.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qcursor.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qkeysequence.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qevent.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qvariant.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qmap.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qdebug.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qtextstream.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qlocale.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qset.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qcontiguouscache.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qurl.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qurlquery.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qfile.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qfiledevice.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qvector2d.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qtouchdevice.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpaintengine.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpainter.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
@@ -1646,6 +1815,8 @@ obj/NGLScene.o: src/NGLScene.cpp /opt/Qt5.7.0/5.7/gcc_64/include/QtGui/QMouseEve
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QOpenGLWidget \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qopenglwidget.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/QEvent \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtOpenGL/QGLWidget \
 		include/physicsengine.h \
 		include/rigidBody.h \
 		/home/i7466612/NGL/include/ngl/ShaderLib.h \
@@ -1659,6 +1830,15 @@ obj/NGLScene.o: src/NGLScene.cpp /opt/Qt5.7.0/5.7/gcc_64/include/QtGui/QMouseEve
 		/home/i7466612/NGL/include/ngl/NGLInit.h \
 		/home/i7466612/NGL/include/ngl/VAOPrimitives.h \
 		include/rigidBodyTypeInfo.h \
+		include/spatialPartition.h \
+		include/RigidBodyOctree.h \
+		include/AbstractOctree.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/QMouseEvent \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/QGuiApplication \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qguiapplication.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreapplication.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qeventloop.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qinputmethod.h \
 		/home/i7466612/NGL/include/ngl/Material.h \
 		/home/i7466612/NGL/include/ngl/Random.h \
 		/home/i7466612/NGL/include/ngl/NGLStream.h \
@@ -1668,15 +1848,6 @@ obj/NGLScene.o: src/NGLScene.cpp /opt/Qt5.7.0/5.7/gcc_64/include/QtGui/QMouseEve
 
 obj/NGLSceneMouseControls.o: src/NGLSceneMouseControls.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/NGLSceneMouseControls.o src/NGLSceneMouseControls.cpp
-
-obj/rigidBodyFactory.o: src/rigidBodyFactory.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/rigidBodyFactory.o src/rigidBodyFactory.cpp
-
-obj/sphere.o: src/sphere.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/sphere.o src/sphere.cpp
-
-obj/StaticPlane.o: src/StaticPlane.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/StaticPlane.o src/StaticPlane.cpp
 
 obj/MainWindow.o: src/MainWindow.cpp include/MainWindow.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
@@ -1779,6 +1950,8 @@ obj/MainWindow.o: src/MainWindow.cpp include/MainWindow.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qtouchdevice.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabwidget.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qicon.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmessagebox.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdialog.h \
 		include/NGLScene.h \
 		/home/i7466612/NGL/include/ngl/Camera.h \
 		/home/i7466612/NGL/include/ngl/Types.h \
@@ -1818,6 +1991,8 @@ obj/MainWindow.o: src/MainWindow.cpp include/MainWindow.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QOpenGLWidget \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qopenglwidget.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/QEvent \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtOpenGL/QGLWidget \
 		include/physicsengine.h \
 		include/rigidBody.h \
 		/home/i7466612/NGL/include/ngl/ShaderLib.h \
@@ -1831,6 +2006,9 @@ obj/MainWindow.o: src/MainWindow.cpp include/MainWindow.h \
 		/home/i7466612/NGL/include/ngl/NGLInit.h \
 		/home/i7466612/NGL/include/ngl/VAOPrimitives.h \
 		include/rigidBodyTypeInfo.h \
+		include/spatialPartition.h \
+		include/RigidBodyOctree.h \
+		include/AbstractOctree.h \
 		ui_MainWindow.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/QVariant \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QAction \
@@ -1878,6 +2056,294 @@ obj/MainWindow.o: src/MainWindow.cpp include/MainWindow.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/MainWindow.o src/MainWindow.cpp
+
+obj/AbstractOctree.o: src/AbstractOctree.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/AbstractOctree.o src/AbstractOctree.cpp
+
+obj/RigidBodyOctree.o: src/RigidBodyOctree.cpp include/RigidBodyOctree.h \
+		include/AbstractOctree.h \
+		/home/i7466612/NGL/include/ngl/Vec2.h \
+		/home/i7466612/NGL/include/ngl/Types.h \
+		/home/i7466612/NGL/include/ngl/glew.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtOpenGL/QGLContext \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtOpenGL/qgl.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qopengl.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qglobal.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qconfig.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qfeatures.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qsystemdetection.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qprocessordetection.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qcompilerdetection.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qtypeinfo.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qtypetraits.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qisenum.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qsysinfo.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qlogging.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qflags.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qbasicatomic.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qgenericatomic.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_cxx11.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_msvc.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qglobalstatic.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qmutex.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qnumeric.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qversiontagging.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qt_windows.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qopengles2ext.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglext.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qwidget.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qwindowdefs.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectdefs.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qnamespace.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qwindowdefs_win.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qobject.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qstring.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qchar.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qbytearray.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qrefcount.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qarraydata.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qstringbuilder.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qlist.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qalgorithms.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qiterator.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qhashfunctions.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qpair.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qbytearraylist.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qstringlist.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qregexp.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qstringmatcher.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreevent.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qscopedpointer.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qmetatype.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qvarlengtharray.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qcontainerfwd.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qobject_impl.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qmargins.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpaintdevice.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qrect.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qsize.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qpoint.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpalette.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qcolor.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qrgb.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qrgba64.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qbrush.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qvector.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qmatrix.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpolygon.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qregion.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qdatastream.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qiodevice.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qline.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qtransform.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpainterpath.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qimage.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpixelformat.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpixmap.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qshareddata.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qhash.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qfont.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qfontmetrics.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qfontinfo.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qsizepolicy.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qcursor.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qkeysequence.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qevent.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qvariant.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qmap.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qdebug.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qtextstream.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qlocale.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qset.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qcontiguouscache.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qurl.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qurlquery.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qfile.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qfiledevice.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qvector2d.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qtouchdevice.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpaintengine.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpainter.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtOpenGL/qglcolormap.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtOpenGL/qtopenglglobal.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/QSurfaceFormat \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qsurfaceformat.h \
+		/home/i7466612/NGL/include/ngl/Vec3.h \
+		/home/i7466612/NGL/include/ngl/Vec4.h \
+		include/rigidBody.h \
+		/home/i7466612/NGL/include/ngl/Camera.h \
+		/home/i7466612/NGL/include/ngl/Mat4.h \
+		/home/i7466612/NGL/include/ngl/RibExport.h \
+		/home/i7466612/NGL/include/ngl/Plane.h \
+		/home/i7466612/NGL/include/ngl/AABB.h \
+		/home/i7466612/NGL/include/ngl/BBox.h \
+		/home/i7466612/NGL/include/ngl/AbstractVAO.h \
+		/home/i7466612/NGL/include/ngl/Colour.h \
+		/home/i7466612/NGL/include/ngl/Transformation.h \
+		/home/i7466612/NGL/include/ngl/NGLassert.h \
+		/home/i7466612/NGL/include/ngl/ShaderLib.h \
+		/home/i7466612/NGL/include/ngl/Shader.h \
+		/home/i7466612/NGL/include/ngl/ShaderProgram.h \
+		/home/i7466612/NGL/include/ngl/Util.h \
+		/home/i7466612/NGL/include/ngl/Singleton.h \
+		/home/i7466612/NGL/include/ngl/Mat3.h \
+		include/collider.h \
+		include/intersectdata.h \
+		/home/i7466612/NGL/include/ngl/NGLInit.h \
+		/home/i7466612/NGL/include/ngl/VAOPrimitives.h \
+		include/rigidBodyTypeInfo.h \
+		include/spatialPartition.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/RigidBodyOctree.o src/RigidBodyOctree.cpp
+
+obj/spatialPartition.o: src/spatialPartition.cpp include/spatialPartition.h \
+		include/rigidBody.h \
+		/home/i7466612/NGL/include/ngl/Camera.h \
+		/home/i7466612/NGL/include/ngl/Types.h \
+		/home/i7466612/NGL/include/ngl/glew.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtOpenGL/QGLContext \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtOpenGL/qgl.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qopengl.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qglobal.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qconfig.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qfeatures.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qsystemdetection.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qprocessordetection.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qcompilerdetection.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qtypeinfo.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qtypetraits.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qisenum.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qsysinfo.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qlogging.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qflags.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qbasicatomic.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qgenericatomic.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_cxx11.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_msvc.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qglobalstatic.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qmutex.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qnumeric.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qversiontagging.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qt_windows.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qopengles2ext.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglext.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qwidget.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qwindowdefs.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectdefs.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qnamespace.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qwindowdefs_win.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qobject.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qstring.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qchar.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qbytearray.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qrefcount.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qarraydata.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qstringbuilder.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qlist.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qalgorithms.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qiterator.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qhashfunctions.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qpair.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qbytearraylist.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qstringlist.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qregexp.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qstringmatcher.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreevent.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qscopedpointer.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qmetatype.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qvarlengtharray.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qcontainerfwd.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qobject_impl.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qmargins.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpaintdevice.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qrect.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qsize.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qpoint.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpalette.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qcolor.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qrgb.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qrgba64.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qbrush.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qvector.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qmatrix.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpolygon.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qregion.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qdatastream.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qiodevice.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qline.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qtransform.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpainterpath.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qimage.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpixelformat.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpixmap.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qshareddata.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qhash.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qfont.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qfontmetrics.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qfontinfo.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qsizepolicy.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qcursor.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qkeysequence.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qevent.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qvariant.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qmap.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qdebug.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qtextstream.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qlocale.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qset.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qcontiguouscache.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qurl.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qurlquery.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qfile.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qfiledevice.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qvector2d.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qtouchdevice.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpaintengine.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpainter.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtOpenGL/qglcolormap.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtOpenGL/qtopenglglobal.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/QSurfaceFormat \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qsurfaceformat.h \
+		/home/i7466612/NGL/include/ngl/Vec4.h \
+		/home/i7466612/NGL/include/ngl/Vec2.h \
+		/home/i7466612/NGL/include/ngl/Vec3.h \
+		/home/i7466612/NGL/include/ngl/Mat4.h \
+		/home/i7466612/NGL/include/ngl/RibExport.h \
+		/home/i7466612/NGL/include/ngl/Plane.h \
+		/home/i7466612/NGL/include/ngl/AABB.h \
+		/home/i7466612/NGL/include/ngl/BBox.h \
+		/home/i7466612/NGL/include/ngl/AbstractVAO.h \
+		/home/i7466612/NGL/include/ngl/Colour.h \
+		/home/i7466612/NGL/include/ngl/Transformation.h \
+		/home/i7466612/NGL/include/ngl/NGLassert.h \
+		/home/i7466612/NGL/include/ngl/ShaderLib.h \
+		/home/i7466612/NGL/include/ngl/Shader.h \
+		/home/i7466612/NGL/include/ngl/ShaderProgram.h \
+		/home/i7466612/NGL/include/ngl/Util.h \
+		/home/i7466612/NGL/include/ngl/Singleton.h \
+		/home/i7466612/NGL/include/ngl/Mat3.h \
+		include/collider.h \
+		include/intersectdata.h \
+		/home/i7466612/NGL/include/ngl/NGLInit.h \
+		/home/i7466612/NGL/include/ngl/VAOPrimitives.h \
+		include/rigidBodyTypeInfo.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/spatialPartition.o src/spatialPartition.cpp
+
+obj/moc_NGLScene.o: moc/moc_NGLScene.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/moc_NGLScene.o moc/moc_NGLScene.cpp
 
 obj/moc_MainWindow.o: moc/moc_MainWindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/moc_MainWindow.o moc/moc_MainWindow.cpp
