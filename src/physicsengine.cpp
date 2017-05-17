@@ -64,6 +64,7 @@ void PhysicsEngine::resetForces()
   for(auto& i : m_rigidObjects)
   {
     i.setVelocity(ngl::Vec3::zero());
+    //i.se
   }
 }
 
@@ -95,7 +96,7 @@ void PhysicsEngine::handleCollisions()
       ///@brief Gets whether objects intersect and the direction of intersection between BoundingSphere-BoundingSphere,
       /// BoundingSphere-AABB, AABB-AABB.
       IntersectData intersectData = m_rigidObjects[i].transformCollider().intersect(m_rigidObjects[j].transformCollider());
-      std::cout<<intersectData.GetDoesIntersect()<<"---------\n";
+     // std::cout<<intersectData.GetDoesIntersect()<<"---------\n";
 
       ///@brief Collision response based on intersection of two dynamic rigid bodies
       if(intersectData.GetDoesIntersect())
@@ -118,28 +119,43 @@ void PhysicsEngine::handleCollisions()
 
       //  float speed_i = m_rigidObjects[i].getVelocity().length();
       //  float speed_j = m_rigidObjects[j].getVelocity().length();
-        //Modified from :
 
-        float newVel_ix = m_rigidObjects[i].getVelocity().m_x * (m_rigidObjects[i].getMass() - m_rigidObjects[j].getMass()) +
-                                                        (2 * m_rigidObjects[j].getMass() * m_rigidObjects[j].getVelocity().m_x)
-                                                        / (m_rigidObjects[i].getMass() + m_rigidObjects[j].getMass());
-        float newVel_iy = m_rigidObjects[i].getVelocity().m_y * (m_rigidObjects[i].getMass() - m_rigidObjects[j].getMass()) +
-                                                        (2 * m_rigidObjects[j].getMass() * m_rigidObjects[j].getVelocity().m_y)
-                                                        / (m_rigidObjects[i].getMass() + m_rigidObjects[j].getMass());
-        float newVel_iz = m_rigidObjects[i].getVelocity().m_z * (m_rigidObjects[i].getMass() - m_rigidObjects[j].getMass()) +
-                                                        (2 * m_rigidObjects[j].getMass() * m_rigidObjects[j].getVelocity().m_z)
-                                                        / (m_rigidObjects[i].getMass() + m_rigidObjects[j].getMass());
+        //Modified from : https://gamedevelopment.tutsplus.com/tutorials/when-worlds-collide-simulating-circle-circle-collisions--gamedev-769
 
-        float newVel_jx = m_rigidObjects[j].getVelocity().m_x * (m_rigidObjects[j].getMass() - m_rigidObjects[i].getMass()) +
-                                                        (2 * m_rigidObjects[i].getMass() * m_rigidObjects[i].getVelocity().m_x)
-                                                        / (m_rigidObjects[j].getMass() + m_rigidObjects[i].getMass());
-        float newVel_jy = m_rigidObjects[j].getVelocity().m_y * (m_rigidObjects[j].getMass() - m_rigidObjects[i].getMass()) +
-                                                        (2 * m_rigidObjects[i].getMass() * m_rigidObjects[i].getVelocity().m_y)
-                                                        / (m_rigidObjects[j].getMass() + m_rigidObjects[i].getMass());
-        float newVel_jz = m_rigidObjects[j].getVelocity().m_z * (m_rigidObjects[j].getMass() - m_rigidObjects[i].getMass()) +
-                                                        (2 * m_rigidObjects[i].getMass() * m_rigidObjects[i].getVelocity().m_z)
-                                                        / (m_rigidObjects[j].getMass() + m_rigidObjects[i].getMass());
+//        float newVel_ix = m_rigidObjects[i].getVelocity().m_x * (m_rigidObjects[i].getMass() - m_rigidObjects[j].getMass()) +
+//                                                        (2 * m_rigidObjects[j].getMass() * m_rigidObjects[j].getVelocity().m_x)
+//                                                        / (m_rigidObjects[i].getMass() + m_rigidObjects[j].getMass());
+//        float newVel_iy = m_rigidObjects[i].getVelocity().m_y * (m_rigidObjects[i].getMass() - m_rigidObjects[j].getMass()) +
+//                                                        (2 * m_rigidObjects[j].getMass() * m_rigidObjects[j].getVelocity().m_y)
+//                                                        / (m_rigidObjects[i].getMass() + m_rigidObjects[j].getMass());
+//        float newVel_iz = m_rigidObjects[i].getVelocity().m_z * (m_rigidObjects[i].getMass() - m_rigidObjects[j].getMass()) +
+//                                                        (2 * m_rigidObjects[j].getMass() * m_rigidObjects[j].getVelocity().m_z)
+//                                                        / (m_rigidObjects[i].getMass() + m_rigidObjects[j].getMass());
 
+//        float newVel_jx = m_rigidObjects[j].getVelocity().m_x * (m_rigidObjects[j].getMass() - m_rigidObjects[i].getMass()) +
+//                                                        (2 * m_rigidObjects[i].getMass() * m_rigidObjects[i].getVelocity().m_x)
+//                                                        / (m_rigidObjects[j].getMass() + m_rigidObjects[i].getMass());
+//        float newVel_jy = m_rigidObjects[j].getVelocity().m_y * (m_rigidObjects[j].getMass() - m_rigidObjects[i].getMass()) +
+//                                                        (2 * m_rigidObjects[i].getMass() * m_rigidObjects[i].getVelocity().m_y)
+//                                                        / (m_rigidObjects[j].getMass() + m_rigidObjects[i].getMass());
+//        float newVel_jz = m_rigidObjects[j].getVelocity().m_z * (m_rigidObjects[j].getMass() - m_rigidObjects[i].getMass()) +
+//                                                        (2 * m_rigidObjects[i].getMass() * m_rigidObjects[i].getVelocity().m_z)
+//                                                        / (m_rigidObjects[j].getMass() + m_rigidObjects[i].getMass());
+
+
+        //Formula for elactic/ inelastic collision from : https://en.wikipedia.org/wiki/Inelastic_collision
+
+        ngl::Vec3 newVel_i = (m_rigidObjects[j].getMass() * m_restitutionCoeff *
+                          (m_rigidObjects[j].getVelocity() - m_rigidObjects[i].getVelocity()) +
+                          m_rigidObjects[i].getMass() * m_rigidObjects[i].getVelocity() +
+                          m_rigidObjects[j].getMass() * m_rigidObjects[j].getVelocity()) /
+                          (m_rigidObjects[i].getMass() + m_rigidObjects[j].getMass());
+
+        ngl::Vec3 newVel_j = (m_rigidObjects[i].getMass() * m_restitutionCoeff *
+                          (m_rigidObjects[i].getVelocity() - m_rigidObjects[j].getVelocity()) +
+                          m_rigidObjects[j].getMass() * m_rigidObjects[j].getVelocity() +
+                          m_rigidObjects[i].getMass() * m_rigidObjects[i].getVelocity()) /
+                          (m_rigidObjects[j].getMass() + m_rigidObjects[i].getMass());
 
 
 //        //calculate restitution
@@ -157,8 +173,12 @@ void PhysicsEngine::handleCollisions()
     //    m_rigidObjects[j].setVelocity(m_rigidObjects[j].getVelocity() + 1 / m_rigidObjects[j].getMass() * impulse);
 
 
-        m_rigidObjects[i].setVelocity(ngl::Vec3(newVel_ix, newVel_iy, newVel_iz));
-        m_rigidObjects[j].setVelocity(ngl::Vec3(newVel_jx, newVel_jy, newVel_jz));
+       // m_rigidObjects[i].setVelocity(ngl::Vec3(newVel_ix, newVel_iy, newVel_iz));
+       // m_rigidObjects[j].setVelocity(ngl::Vec3(newVel_jx, newVel_jy, newVel_jz));
+
+        m_rigidObjects[i].setVelocity(newVel_i);
+        m_rigidObjects[j].setVelocity(newVel_j);
+
 
 
 
@@ -180,37 +200,25 @@ void PhysicsEngine::checkGroundWallCollision()
     if((i.getPosition().m_y - i.transformCollider().getSize().m_y) < m_groundPlane_y || (i.getPosition().m_y - i.transformCollider().getSize().m_y) > 100)
     {
       ngl::Vec3 normal = ngl::Vec3(0.0,1.0,0.0);
-      //float penetrationDepth = normal.dot(i.getPosition());
-   //   float penetrationDepth = 0 - i.transformCollider().getSize().m_y;
-   //   penetrationDepth -= i.getPosition().m_y;
-   //   penetrationDepth = abs(penetrationDepth);
-    //  float dist = m_rigidObjects[i].getPosition().m_y;
-    //  i.setPosition(i.getPosition() + normal * fabs((float)dist));// + m_rigidObjects[i].getCollider().getSize());
-//      if(i.getVelocity().m_y < 0.5 && i.getPosition().m_y - i.transformCollider().getSize().m_y < 0.5)
-//      {
-//        i.setVelocity(ngl::Vec3::zero());
-//      }
-      i.setVelocity(ngl::Vec3((i.getVelocity().reflect(normal))/(i.getMass())));//*i.getFrictionCoeff());//*0.991));
-      //Linear projection - stops objects sinking into ground plane due to gravity floating point errors
-  //    const float percent = 0.2;
-  //    const float slop = 0.01;
-//      penetrationDepth -
+
+      i.setVelocity(ngl::Vec3((i.getVelocity().reflect(normal))/(i.getMass())));
+      i.setPosition(i.getPosition() + ngl::Vec3(0.0, -m_gravity.m_y/13000,0.0)); // Simple hack to account for precision errors to help
+                                                                                  //prevent objects sinking into the ground
+//      Linear projection - stops objects sinking into ground plane due to gravity floating point errors
+//      const float percent = 0.2;
+//      const float slop = 0.01;
 //      ngl::Vec3 correction = ngl::Vec3(0.0,penetrationDepth,0.0) / (1/(i.getMass()) * percent * normal);
-//      std::cout<<correction<<"correction---------------\n";
-//      std::cout<<penetrationDepth<<"depth---------------\n";
 //      i.setPosition(i.getPosition() + 1/(i.getMass()) * correction);
-    //  if(m_gravity.m_y != 0)
-       i.setPosition(i.getPosition() + ngl::Vec3(0.0, -m_gravity.m_y/13000,0.0)); // Simple hack to account for precision errors
     }
     if((i.getPosition().m_x + i.transformCollider().getSize().m_x) > 100 || (i.getPosition().m_x - i.transformCollider().getSize().m_x) < -100)
     {
 
-      i.setVelocity(ngl::Vec3(i.getVelocity().reflect(ngl::Vec3(1.0,0.0,0.0))));
+      i.setVelocity(ngl::Vec3(i.getVelocity().reflect(ngl::Vec3(1.0,0.0,0.0))/(i.getMass())));
        i.setPosition(i.getPosition() + ngl::Vec3(-m_gravity.m_y/13000, 0.0, 0.0));
     }
     if((i.getPosition().m_z + i.transformCollider().getSize().m_z) > 100 || (i.getPosition().m_z - i.transformCollider().getSize().m_z) < -100)
     {
-      i.setVelocity(ngl::Vec3(i.getVelocity().reflect(ngl::Vec3(0.0,0.0,1.0))));
+      i.setVelocity(ngl::Vec3(i.getVelocity().reflect(ngl::Vec3(0.0,0.0,1.0))/(i.getMass())));
       i.setPosition(i.getPosition() + ngl::Vec3(0.0, 0.0, -m_gravity.m_y/13000));
     }
   }
@@ -227,7 +235,8 @@ void PhysicsEngine::updatePhysics(float _time)
 
   }
   handleCollisions();
-  checkGroundWallCollision();
+  if(m_boundingAreaOn)
+    checkGroundWallCollision();
 }
 
 void PhysicsEngine::drawPhysics(const ngl::Mat4 &_globalTx, ngl::Camera *_cam, const std::string _shaderName, ngl::Vec3 _colour)

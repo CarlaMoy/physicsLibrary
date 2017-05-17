@@ -51,6 +51,8 @@ private:
     void setMinPoint() {m_minPoint = minBound();}
     void setMaxPoint() {m_maxPoint = maxBound();}
 
+    void drawObject() override;
+
 };
 
 #endif // AABB_H

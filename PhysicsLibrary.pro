@@ -41,7 +41,8 @@ SOURCES+=$$PWD/src/main.cpp \
          $$PWD/src/MainWindow.cpp \
          $$PWD/src/AbstractOctree.cpp \
          $$PWD/src/RigidBodyOctree.cpp \
-         $$PWD/src/spatialPartition.cpp
+         $$PWD/src/spatialPartition.cpp \
+         $$PWD/src/ConfigFile.cpp
 
 
 
@@ -58,7 +59,8 @@ HEADERS+= $$PWD/include/NGLScene.h \
           $$PWD/include/MainWindow.h \
           $$PWD/include/AbstractOctree.h \
           $$PWD/include/RigidBodyOctree.h \
-          $$PWD/include/spatialPartition.h
+          $$PWD/include/spatialPartition.h \
+          $$PWD/include/ConfigFile.h
 
 
 

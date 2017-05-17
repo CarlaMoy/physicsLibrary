@@ -48,11 +48,22 @@ class NGLScene : public QOpenGLWidget
     //----------------------------------------------------------------------------------------------------------------------
     void resizeGL(int _w, int _h);
 
-   // float getGravity() const { return m_gravity; }
+    void resetPhysicsWorld();
+
+    void createRigidBody(int _type, ngl::Vec3 _pos, ngl::Vec3 _vel, ngl::Vec3 _col, float _mass, float _size, float _friction);
+
+    void readFromFile();
+
+    void writeToFile();
+
+    void configFileParser();
+
 public slots:
 
-    void changeGravity(double _value);// { m_gravity = _value; }
-    void resetPhysicsWorld();
+    void changeGravity(double _value);
+    void changeRestitution(double _restitution);
+    void boundingAreaBool(bool _choice);
+
 
 
 private:
@@ -81,10 +92,6 @@ private:
     //----------------------------------------------------------------------------------------------------------------------
     std::unique_ptr<ngl::Light> m_light;
     //----------------------------------------------------------------------------------------------------------------------
-    /// @brief timer id for the animation timer
-    //----------------------------------------------------------------------------------------------------------------------
-   // int m_lightTimer;
-    //----------------------------------------------------------------------------------------------------------------------
     /// @brief flag to indicate if updating physics
     //----------------------------------------------------------------------------------------------------------------------
     bool m_animate;
@@ -96,14 +103,6 @@ private:
     /// @brief timer ID for physics animation timer
     //----------------------------------------------------------------------------------------------------------------------
     int m_physicsTimer;
-    //----------------------------------------------------------------------------------------------------------------------
-    /// @brief method to load transform matrices to the shader
-    //----------------------------------------------------------------------------------------------------------------------
-   // std::unique_ptr<PhysicsEngine> m_world;
-    //----------------------------------------------------------------------------------------------------------------------
-    /// @brief method to load transform matrices to the shader
-    //----------------------------------------------------------------------------------------------------------------------
-    /// @brief method to load transform matrices to the shader
     //----------------------------------------------------------------------------------------------------------------------
     void loadMatricesToShader();
     //----------------------------------------------------------------------------------------------------------------------
@@ -138,10 +137,6 @@ private:
      /// @brief called when the timer is triggered
      //----------------------------------------------------------------------------------------------------------------------
      void timerEvent(QTimerEvent *_event);
-    //----------------------------------------------------------------------------------------------------------------------
-    /// @brief a method to update the light
-    //----------------------------------------------------------------------------------------------------------------------
-    void updateLight();
     //----------------------------------------------------------------------------------------------------------------------
     /// @brief draw our scene passing in the shader to use
     /// @param[in] _shader the name of the shader to use when drawing

@@ -27,6 +27,7 @@ public:
     void transform(const ngl::Vec3& translation) override;
     ngl::Vec3 getCentre() const override {return m_centre;}
     ngl::Vec3 getSize() const override {return ngl::Vec3(m_radius, m_radius, m_radius);} //get diameter
+    void drawObject();
     float getRadius() const { return m_radius; }
 
 private:

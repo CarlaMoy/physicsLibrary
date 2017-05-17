@@ -85,3 +85,9 @@ IntersectData BoundingSphere::intersectGroundPlane()
 
   return IntersectData(groundYpos > m_centre.m_y - m_radius, groundNormal);
 }
+
+void BoundingSphere::drawObject()
+{
+  ngl::VAOPrimitives *prim=ngl::VAOPrimitives::instance();
+  prim->draw("sphere");
+}

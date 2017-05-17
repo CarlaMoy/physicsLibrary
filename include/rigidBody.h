@@ -21,14 +21,14 @@ class RigidBody
   friend class SpatialGrid;
 
 public:
-    RigidBody(Collider* collider, const ngl::Vec3& velocity, const ngl::Vec3 &colour, float mass, float restitution) :
+    RigidBody(Collider* collider, const ngl::Vec3& velocity, const ngl::Vec3 &colour, float mass, float frictionCoeff) :
                                                             m_position(collider->getCentre()),
                                                             m_oldPosition(collider->getCentre()),
                                                             m_velocity(velocity),
                                                             m_colour(colour),
                                                             m_acceleration(ngl::Vec3(0.0,0.0,0.0)),
                                                             m_mass(mass),
-                                                            m_restitution(restitution),
+                                                            m_frictionCoeff(frictionCoeff),
                                                             m_collider(collider){}
     RigidBody(const RigidBody& other)=default;
  //   RigidBody operator=(RigidBody other);
@@ -46,7 +46,7 @@ public:
     const ngl::Vec3& getVelocity() const {return m_velocity;}
     const ngl::Vec3& getColour() const {return m_colour;}
     const float& getMass() const {return m_mass;}
-    const float& getRestitution() const {return m_restitution;}
+    const float& getfrictionCoeff() const {return m_frictionCoeff;}
     const Collider& transformCollider();
     //virtual RigidBodyType getType() const{};
 
@@ -72,7 +72,7 @@ private:
 
 
     float m_mass;
-    float m_restitution;
+    float m_frictionCoeff;
 
     GLuint m_ID;
    // bool m_isDynamic;

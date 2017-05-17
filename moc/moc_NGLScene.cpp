@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_NGLScene_t {
-    QByteArrayData data[5];
-    char stringdata0[49];
+    QByteArrayData data[8];
+    char stringdata0[87];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -33,11 +33,15 @@ QT_MOC_LITERAL(0, 0, 8), // "NGLScene"
 QT_MOC_LITERAL(1, 9, 13), // "changeGravity"
 QT_MOC_LITERAL(2, 23, 0), // ""
 QT_MOC_LITERAL(3, 24, 6), // "_value"
-QT_MOC_LITERAL(4, 31, 17) // "resetPhysicsWorld"
+QT_MOC_LITERAL(4, 31, 17), // "changeRestitution"
+QT_MOC_LITERAL(5, 49, 12), // "_restitution"
+QT_MOC_LITERAL(6, 62, 16), // "boundingAreaBool"
+QT_MOC_LITERAL(7, 79, 7) // "_choice"
 
     },
     "NGLScene\0changeGravity\0\0_value\0"
-    "resetPhysicsWorld"
+    "changeRestitution\0_restitution\0"
+    "boundingAreaBool\0_choice"
 };
 #undef QT_MOC_LITERAL
 
@@ -47,7 +51,7 @@ static const uint qt_meta_data_NGLScene[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       2,   14, // methods
+       3,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -55,12 +59,14 @@ static const uint qt_meta_data_NGLScene[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    1,   24,    2, 0x0a /* Public */,
-       4,    0,   27,    2, 0x0a /* Public */,
+       1,    1,   29,    2, 0x0a /* Public */,
+       4,    1,   32,    2, 0x0a /* Public */,
+       6,    1,   35,    2, 0x0a /* Public */,
 
  // slots: parameters
     QMetaType::Void, QMetaType::Double,    3,
-    QMetaType::Void,
+    QMetaType::Void, QMetaType::Double,    5,
+    QMetaType::Void, QMetaType::Bool,    7,
 
        0        // eod
 };
@@ -72,7 +78,8 @@ void NGLScene::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, vo
         Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->changeGravity((*reinterpret_cast< double(*)>(_a[1]))); break;
-        case 1: _t->resetPhysicsWorld(); break;
+        case 1: _t->changeRestitution((*reinterpret_cast< double(*)>(_a[1]))); break;
+        case 2: _t->boundingAreaBool((*reinterpret_cast< bool(*)>(_a[1]))); break;
         default: ;
         }
     }
@@ -103,13 +110,13 @@ int NGLScene::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 2)
+        if (_id < 3)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 2;
+        _id -= 3;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 2)
+        if (_id < 3)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 2;
+        _id -= 3;
     }
     return _id;
 }

@@ -86,9 +86,9 @@ void AABB::transform(const ngl::Vec3& _translation)
   m_centre += _translation;
   setMinPoint();
   setMaxPoint();
-  std::cout<<m_maxPoint<<"maxPoint..............\n";
-  std::cout<<m_minPoint<<"minPoint..............\n";
-  std::cout<<m_centre<<"centre.............\n";
+ // std::cout<<m_maxPoint<<"maxPoint..............\n";
+ // std::cout<<m_minPoint<<"minPoint..............\n";
+ // std::cout<<m_centre<<"centre.............\n";
 }
 
 
@@ -98,8 +98,8 @@ ngl::Vec3 AABB::minBound()
   float min_x = (m_centre.m_x - m_width/2);
   float min_y = (m_centre.m_y - m_height/2);
   float min_z = (m_centre.m_z - m_depth/2);
-   std::cout<<m_centre<<"centre2.............\n";
-   std::cout<<m_width<<"width.............\n";
+  // std::cout<<m_centre<<"centre2.............\n";
+  // std::cout<<m_width<<"width.............\n";
 
   return ngl::Vec3(min_x, min_y, min_z);
 }
@@ -111,4 +111,65 @@ ngl::Vec3 AABB::maxBound()
   float max_z = (m_centre.m_z + m_depth/2);
 
   return ngl::Vec3(max_x, max_y, max_z);
+}
+
+void AABB::drawObject()
+{
+  float cubeVertices[] = {
+          // positions
+          -0.5f, -0.5f, -0.5f,
+           0.5f, -0.5f, -0.5f,
+           0.5f,  0.5f, -0.5f,
+           0.5f,  0.5f, -0.5f,
+          -0.5f,  0.5f, -0.5f,
+          -0.5f, -0.5f, -0.5f,
+
+          -0.5f, -0.5f,  0.5f,
+           0.5f, -0.5f,  0.5f,
+           0.5f,  0.5f,  0.5f,
+           0.5f,  0.5f,  0.5f,
+          -0.5f,  0.5f,  0.5f,
+          -0.5f, -0.5f,  0.5f,
+
+          -0.5f,  0.5f,  0.5f,
+          -0.5f,  0.5f, -0.5f,
+          -0.5f, -0.5f, -0.5f,
+          -0.5f, -0.5f, -0.5f,
+          -0.5f, -0.5f,  0.5f,
+          -0.5f,  0.5f,  0.5f,
+
+           0.5f,  0.5f,  0.5f,
+           0.5f,  0.5f, -0.5f,
+           0.5f, -0.5f, -0.5f,
+           0.5f, -0.5f, -0.5f,
+           0.5f, -0.5f,  0.5f,
+           0.5f,  0.5f,  0.5f,
+
+          -0.5f, -0.5f, -0.5f,
+           0.5f, -0.5f, -0.5f,
+           0.5f, -0.5f,  0.5f,
+           0.5f, -0.5f,  0.5f,
+          -0.5f, -0.5f,  0.5f,
+          -0.5f, -0.5f, -0.5f,
+
+          -0.5f,  0.5f, -0.5f,
+           0.5f,  0.5f, -0.5f,
+           0.5f,  0.5f,  0.5f,
+           0.5f,  0.5f,  0.5f,
+          -0.5f,  0.5f,  0.5f,
+          -0.5f,  0.5f, -0.5f
+      };
+
+// setup cube VAO
+    unsigned int cubeVAO, cubeVBO;
+    glGenVertexArrays(1, &cubeVAO);
+    glGenBuffers(1, &cubeVBO);
+    glBindVertexArray(cubeVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), &cubeVertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
+    glBindVertexArray(cubeVAO);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
 }

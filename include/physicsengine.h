@@ -29,10 +29,12 @@ public:
     void updatePhysics(float _time);
     void drawPhysics(const ngl::Mat4 &_globalTx, ngl::Camera *_cam, const std::string _shaderName, ngl::Vec3 _colour);
     void setGravity(float _value){m_gravity.m_y = _value;}
+    void setRestitutionCoeff(float _restitution) {m_restitutionCoeff = _restitution;}
     ngl::Vec3 applyWorldForces();
     void addWind(ngl::Vec3 _amount);
     void resetForces();
     void resetWorld() {m_rigidObjects.clear();}
+    void setBoundingArea(bool _choice) {m_boundingAreaOn = _choice;}
 
 
 
@@ -58,11 +60,11 @@ private:
     std::vector<RigidBody> m_rigidObjects;
     std::vector <RigidBody *> m_rigidObjs;
     //std::unique_ptr<ngl::AbstractVAO> m_vao;
-    bool m_gravOn;
+    bool m_boundingAreaOn = true;
     float m_groundPlane_y = 0.0f;
     ngl::Vec3 m_gravity;// = ngl::Vec3(0.0,-9.8,0.0);
     ngl::Vec3 m_wind;
-    ngl::Vec3 m_friction;
+    float m_restitutionCoeff = 0.5;
 
     //ngl::Vec3 m_groundPlane_y = ngl::Vec3(0.0,0.0,0.0);
 

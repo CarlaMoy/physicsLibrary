@@ -25,9 +25,14 @@ public:
 
   void on_pushButton_clicked();
 
+public slots:
+  void createObject();
+
 private:
   Ui::MainWindow *m_ui;
   NGLScene *m_gl;
+
+
 };
 
 #endif // MAINWINDOW_H

@@ -61,7 +61,8 @@ SOURCES       = src/main.cpp \
 		src/MainWindow.cpp \
 		src/AbstractOctree.cpp \
 		src/RigidBodyOctree.cpp \
-		src/spatialPartition.cpp moc/moc_NGLScene.cpp \
+		src/spatialPartition.cpp \
+		src/ConfigFile.cpp moc/moc_NGLScene.cpp \
 		moc/moc_MainWindow.cpp
 OBJECTS       = obj/main.o \
 		obj/rigidBody.o \
@@ -77,6 +78,7 @@ OBJECTS       = obj/main.o \
 		obj/AbstractOctree.o \
 		obj/RigidBodyOctree.o \
 		obj/spatialPartition.o \
+		obj/ConfigFile.o \
 		obj/moc_NGLScene.o \
 		obj/moc_MainWindow.o
 DIST          = .qmake.stash \
@@ -92,7 +94,8 @@ DIST          = .qmake.stash \
 		include/MainWindow.h \
 		include/AbstractOctree.h \
 		include/RigidBodyOctree.h \
-		include/spatialPartition.h src/main.cpp \
+		include/spatialPartition.h \
+		include/ConfigFile.h src/main.cpp \
 		src/rigidBody.cpp \
 		src/boundingSphere.cpp \
 		src/intersectdata.cpp \
@@ -105,7 +108,8 @@ DIST          = .qmake.stash \
 		src/MainWindow.cpp \
 		src/AbstractOctree.cpp \
 		src/RigidBodyOctree.cpp \
-		src/spatialPartition.cpp
+		src/spatialPartition.cpp \
+		src/ConfigFile.cpp
 QMAKE_TARGET  = PhysicsLibrary
 DESTDIR       = 
 TARGET        = PhysicsLibrary
@@ -452,8 +456,8 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents include/NGLScene.h include/WindowParams.h include/rigidBody.h include/boundingSphere.h include/intersectdata.h include/aabb.h include/plane.h include/physicsengine.h include/collider.h include/MainWindow.h include/AbstractOctree.h include/RigidBodyOctree.h include/spatialPartition.h $(DISTDIR)/
-	$(COPY_FILE) --parents src/main.cpp src/rigidBody.cpp src/boundingSphere.cpp src/intersectdata.cpp src/aabb.cpp src/plane.cpp src/physicsengine.cpp src/collider.cpp src/NGLScene.cpp src/NGLSceneMouseControls.cpp src/MainWindow.cpp src/AbstractOctree.cpp src/RigidBodyOctree.cpp src/spatialPartition.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents include/NGLScene.h include/WindowParams.h include/rigidBody.h include/boundingSphere.h include/intersectdata.h include/aabb.h include/plane.h include/physicsengine.h include/collider.h include/MainWindow.h include/AbstractOctree.h include/RigidBodyOctree.h include/spatialPartition.h include/ConfigFile.h $(DISTDIR)/
+	$(COPY_FILE) --parents src/main.cpp src/rigidBody.cpp src/boundingSphere.cpp src/intersectdata.cpp src/aabb.cpp src/plane.cpp src/physicsengine.cpp src/collider.cpp src/NGLScene.cpp src/NGLSceneMouseControls.cpp src/MainWindow.cpp src/AbstractOctree.cpp src/RigidBodyOctree.cpp src/spatialPartition.cpp src/ConfigFile.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents UI/MainWindow.ui $(DISTDIR)/
 
 
@@ -1402,7 +1406,8 @@ obj/aabb.o: src/aabb.cpp include/aabb.h \
 		/home/i7466612/NGL/include/ngl/Vec3.h \
 		/home/i7466612/NGL/include/ngl/AbstractVAO.h \
 		include/boundingSphere.h \
-		include/collider.h
+		include/collider.h \
+		/home/i7466612/NGL/include/ngl/NGLStream.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/aabb.o src/aabb.cpp
 
 obj/plane.o: src/plane.cpp 
@@ -1843,7 +1848,8 @@ obj/NGLScene.o: src/NGLScene.cpp include/NGLScene.h \
 		/home/i7466612/NGL/include/ngl/Random.h \
 		/home/i7466612/NGL/include/ngl/NGLStream.h \
 		include/boundingSphere.h \
-		include/aabb.h
+		include/aabb.h \
+		include/ConfigFile.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/NGLScene.o src/NGLScene.cpp
 
 obj/NGLSceneMouseControls.o: src/NGLSceneMouseControls.cpp 
@@ -2023,11 +2029,25 @@ obj/MainWindow.o: src/MainWindow.cpp include/MainWindow.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qinputmethod.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QButtonGroup \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qbuttongroup.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QDoubleSpinBox \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QCheckBox \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcheckbox.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractbutton.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QComboBox \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcombobox.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyleoption.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractspinbox.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtGui/qvalidator.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qregularexpression.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qslider.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractslider.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyle.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabbar.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qrubberband.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qframe.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractitemmodel.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QDoubleSpinBox \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGridLayout \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgridlayout.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayout.h \
@@ -2035,23 +2055,18 @@ obj/MainWindow.o: src/MainWindow.cpp include/MainWindow.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qboxlayout.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGroupBox \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgroupbox.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qframe.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHeaderView \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qheaderview.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemview.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractscrollarea.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractitemmodel.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtCore/qitemselectionmodel.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyleoption.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qslider.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractslider.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyle.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabbar.h \
-		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qrubberband.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLabel \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlabel.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
+		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
 		/opt/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h
@@ -2341,6 +2356,9 @@ obj/spatialPartition.o: src/spatialPartition.cpp include/spatialPartition.h \
 		/home/i7466612/NGL/include/ngl/VAOPrimitives.h \
 		include/rigidBodyTypeInfo.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/spatialPartition.o src/spatialPartition.cpp
+
+obj/ConfigFile.o: src/ConfigFile.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/ConfigFile.o src/ConfigFile.cpp
 
 obj/moc_NGLScene.o: moc/moc_NGLScene.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/moc_NGLScene.o moc/moc_NGLScene.cpp

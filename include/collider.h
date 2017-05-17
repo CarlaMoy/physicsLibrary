@@ -30,6 +30,7 @@ public:
     virtual void transform(const ngl::Vec3& translation) = 0;
     virtual ngl::Vec3 getCentre() const = 0;
     virtual ngl::Vec3 getSize() const = 0;
+    virtual void drawObject() = 0;
     int getType() const {return m_type;}
 
 private:

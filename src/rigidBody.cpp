@@ -33,7 +33,7 @@ void RigidBody::integrate(float delta, ngl::Vec3 force)
   {
     m_mass += 1.0;
   }
-  // force += applyObjectForces();
+ //  force += applyObjectForces();
   m_oldAcceleration = m_acceleration;
   m_position += m_velocity * delta + (0.5 * m_oldAcceleration * delta * delta);
   // m_velocity += ngl::Vec3(0.0,-9.8,0.0) * delta;
@@ -43,7 +43,7 @@ void RigidBody::integrate(float delta, ngl::Vec3 force)
   //  if(m_velocity.m_y < 0.4 && m_velocity.m_y > -0.4)
   //    m_velocity = 0.0;
   // std::cout<<m_acceleration<<" acceleration\n";
-  std::cout<<m_position<<"position...........\n";
+ // std::cout<<m_position<<"position...........\n";
 
   //  if(m_velocity.m_y < 0.01 && m_position.m_y < 0.1)
   //  {
@@ -56,7 +56,7 @@ ngl::Vec3 RigidBody::calculateFriction()
 {
   ngl::Vec3 friction = -m_velocity;
   friction.normalize();
-  friction *= m_restitution;
+  friction *= m_frictionCoeff;
   return friction;
 }
 
@@ -117,14 +117,15 @@ void RigidBody::drawRigidBody(const ngl::Mat4 &_globalTx, ngl::Camera *_cam, con
     normalMatrix.inverse();
     shader->setShaderParamFromMat4("MVP",MVP);
     shader->setShaderParamFromMat3("normalMatrix",normalMatrix);
-    std::cout<<m_colour<<"Colour\n";
+   // std::cout<<m_colour<<"Colour\n";
     shader->setShaderParam3f("Colour", m_colour.m_r, m_colour.m_g, m_colour.m_b);
 
     switch(m_collider->getType())
     {
       case m_collider->TYPE_SPHERE : prim->draw("sphere"); break;
-      case m_collider->TYPE_AABB : prim->draw("cube"); break;
+    case m_collider->TYPE_AABB : prim->draw("cube"); break;
     }
+   // m_collider->drawObject();
 
   }
 }
